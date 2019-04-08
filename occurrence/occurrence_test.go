@@ -52,7 +52,11 @@ func makeEpoch(str string) int64 {
 }
 
 func makeInterval(startStr string, endStr string) Interval {
-	return Interval{makeEpoch(startStr), makeEpoch(endStr), false}
+	return Interval{
+		Start:     makeEpoch(startStr),
+		End:       makeEpoch(endStr),
+		ClosedEnd: false,
+	}
 }
 
 func makeJdSet(strList ...string) Set {
