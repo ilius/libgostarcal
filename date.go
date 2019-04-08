@@ -1,4 +1,4 @@
-package scal
+package libscal
 
 import (
 	"errors"
