@@ -1,8 +1,10 @@
 package hijri
 
-import "testing"
+import (
+	"testing"
 
-import "scal"
+	lib "github.com/ilius/libgostarcal"
+)
 
 func TestIsLeap(t *testing.T) {
 	testMap := map[int]bool{
