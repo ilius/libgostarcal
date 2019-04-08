@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"scal"
-	"scal/cal_types/gregorian"
+	lib "github.com/ilius/libgostarcal"
+	"github.com/ilius/libgostarcal/cal_types/gregorian"
 )
 
 func TestTimeZone(t *testing.T) {
