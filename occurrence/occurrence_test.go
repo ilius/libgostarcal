@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"scal"
-	. "scal-lib/mapset"
-	"scal/cal_types/gregorian"
-	. "scal/interval"
-	. "scal/utils"
+	lib "github.com/ilius/libgostarcal"
+	"github.com/ilius/libgostarcal/cal_types/gregorian"
+	. "github.com/ilius/libgostarcal/interval"
+	. "github.com/ilius/libgostarcal/utils"
+	. "github.com/ilius/libgostarcal/utils/mapset"
 )
 
 //const time_format = "2006-01-02 15:04:05";
