@@ -2,9 +2,6 @@ package rules_lib
 
 const R_year = "year"
 
-// FIXME: how can we add support for negetive year numbers?
-// without dropping support for year range
-
 func init() {
 	RegisterRuleType(
 		11,

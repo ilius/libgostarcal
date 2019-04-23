@@ -104,6 +104,8 @@ func TestRules(t *testing.T) {
 	test(t, "weekNumMode", "any", true, true)
 	test(t, "weekNumMode", "foo", true, false)
 	test(t, "year", "1000 100 0 1", true, true)
+	test(t, "year", "-(600-500) -400 -300", true, true)
+	test(t, "year", "-600--500 -400 -300", true, true)
 	test(t, "year", "ff 1000 100 0 1", false, false)
 	test(t, "ex_year", "1000 100 0 1", true, true)
 	test(t, "ex_year", "ff 1000 100 0 1", false, false)
