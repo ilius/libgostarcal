@@ -24,13 +24,17 @@ func TestIntervalListByNumList(t *testing.T) {
 
 func TestIntervalListNormalize(t *testing.T) {
 	testMap := map[string]string{
-		"10-20 20":          "10-20 20",
-		"10-20 20 20":       "10-20 20",
-		"10-20 20-30":       "10-30",
-		"10-20 20-30 30-40": "10-40",
-		"10-20 20-30 25-40": "10-40",
+		"10-20 20":                                         "10-20 20",
+		"10-20]":                                           "10-20 20",
+		"10-20 20 20":                                      "10-20 20",
+		"10-20] 20-30]":                                    "10-30 30",
+		"10-20 20-30":                                      "10-30",
+		"10-20 20-30 30-40":                                "10-40",
+		"10-20 20-30 25-40":                                "10-40",
 		"1-10 14 2-5 9-13 16-18 17-20 15-16 25-30":         "1-13 14 15-20 25-30",
 		"60-70 0-40 10-50 20-30 80-90 70-80 85-100 110 55": "0-50 55 60-100 110",
+		"-(70-60) -(60-55) -(56-50)":                       "-(70-50)",
+		"-(70-60) -(60-55) -(56-50])":                      "-(70-50) -50",
 	}
 	testCount := len(testMap)
 	succeedCount := 0
@@ -57,14 +61,19 @@ func TestIntervalListNormalize(t *testing.T) {
 			t.Error("test failed, result doesn't match the answer")
 			t.Error("  testList =", testList)
 			t.Error("answerList =", answerList)
+		} else {
+			succeedCount++
 		}
 		t.Log(testStr, "=>", answerList)
-		succeedCount++
 	}
 	failedCount := testCount - succeedCount
 	t.Logf("%d tests out of %d succeeded, %d failed\n", succeedCount, testCount, failedCount)
+	if failedCount > 0 {
+		t.Fail()
+	}
 
 	t.Log("len(os.Args) =", len(os.Args))
+
 	/*
 	   argc := len(os.Args)
 	   if argc > 1 {

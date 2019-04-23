@@ -1,7 +1,6 @@
 package interval
 
 import (
-	"errors"
 	"fmt"
 	"sort"
 	"strconv"
@@ -29,20 +28,27 @@ type Interval struct {
 }
 
 func (interval Interval) String() string {
+	if interval.Start > interval.End {
+		return "()"
+	}
 	if interval.Start == interval.End {
 		if interval.ClosedEnd {
 			return fmt.Sprintf("%d", interval.Start)
-		} else {
-			return "()"
 		}
-	} else {
-		if interval.ClosedEnd {
-			return fmt.Sprintf("[%d-%d]", interval.Start, interval.End)
-		} else {
-			return fmt.Sprintf("[%d-%d)", interval.Start, interval.End)
-		}
+		return "()"
 	}
+	if interval.End < 0 && interval.Start < 0 {
+		if interval.ClosedEnd {
+			return fmt.Sprintf("-(%d-%d])", -interval.Start, -interval.End)
+		}
+		return fmt.Sprintf("-(%d-%d)", -interval.Start, -interval.End)
+	}
+	if interval.ClosedEnd {
+		return fmt.Sprintf("%d-%d]", interval.Start, interval.End)
+	}
+	return fmt.Sprintf("%d-%d", interval.Start, interval.End)
 }
+
 func IntervalByJd(jd int, loc *time.Location) Interval {
 	return Interval{
 		GetEpochByJd(jd, loc),
@@ -50,29 +56,74 @@ func IntervalByJd(jd int, loc *time.Location) Interval {
 		false,
 	}
 }
+
 func ParseInterval(str string) (Interval, error) {
-	parts := strings.Split(str, "-")
-	if len(parts) > 2 {
-		return Interval{}, errors.New("invalid Interval string '" + str + "'")
+	interval, err := parseInterval(str)
+	if err != nil {
+		return Interval{}, err
 	}
-	start, startErr := strconv.ParseInt(parts[0], 10, 0)
+	if interval.End < interval.Start {
+		return Interval{}, fmt.Errorf(
+			"invalid interval: end < start, end=%v, start=%v",
+			interval.End,
+			interval.Start,
+		)
+	}
+	return interval, nil
+}
+
+func boolPtr(v bool) *bool {
+	v2 := v
+	return &v2
+}
+
+func parseInterval(str string) (Interval, error) {
+	closedEnd := false
+	if strings.HasSuffix(str, "]") {
+		closedEnd = true
+		str = str[:len(str)-1]
+	}
+	if strings.HasPrefix(str, "-(") {
+		if !strings.HasSuffix(str, ")") {
+			return Interval{}, fmt.Errorf(
+				"invalid Interval string '%s'"+
+					": starts with '-(' but does not end with ')'",
+				str,
+			)
+		}
+		interval, err := parseInterval(str[2 : len(str)-1])
+		if err != nil {
+			return Interval{}, err
+		}
+		interval.Start = -interval.Start
+		interval.End = -interval.End
+		return interval, nil
+	}
+	dashIndex := strings.Index(str[1:], "-")
+	if dashIndex == -1 {
+		start, startErr := strconv.ParseInt(str, 10, 0)
+		if startErr != nil {
+			return Interval{}, startErr
+		}
+		return Interval{int64(start), int64(start), true}, nil
+	}
+	startStr := str[:dashIndex+1]
+	endStr := str[dashIndex+2:]
+
+	start, startErr := strconv.ParseInt(startStr, 10, 0)
 	if startErr != nil {
 		return Interval{}, startErr
 	}
-	var end int64
-	if len(parts) == 1 {
-		end = start
-	} else {
-		var endErr error
-		end, endErr = strconv.ParseInt(parts[1], 10, 0)
-		if endErr != nil {
-			return Interval{}, endErr
-		}
-		if end < start {
-			return Interval{}, errors.New("invalid interval: end < start")
-		}
+
+	end, endErr := strconv.ParseInt(endStr, 10, 0)
+	if endErr != nil {
+		return Interval{}, endErr
 	}
-	return Interval{int64(start), int64(end), start == end}, nil
+
+	if start == end {
+		closedEnd = true
+	}
+	return Interval{int64(start), int64(end), closedEnd}, nil
 }
 
 type IntervalPoint struct {
@@ -171,23 +222,9 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 type IntervalList []Interval
 
 func (list IntervalList) String() string {
-	parts := make([]string, 0, len(list))
-	for _, interval := range list {
-		var part string
-		if interval.ClosedEnd {
-			if interval.Start == interval.End {
-				part = fmt.Sprintf("%d", interval.Start)
-			} else {
-				part = fmt.Sprintf("[%d-%d]", interval.Start, interval.End)
-			}
-		} else {
-			if interval.End > interval.Start {
-				part = fmt.Sprintf("%d-%d", interval.Start, interval.End)
-			} else {
-				part = "None"
-			}
-		}
-		parts = append(parts, part)
+	parts := make([]string, len(list))
+	for i, interval := range list {
+		parts[i] = interval.String()
 	}
 	return strings.Join(parts, " ")
 }
