@@ -1,6 +1,7 @@
 package rules_lib
 
 import (
+	"github.com/ilius/is"
 	"testing"
 )
 
@@ -13,30 +14,22 @@ type RuleTestCase struct {
 
 func TestRules(t *testing.T) {
 	test := func(t *testing.T, typ string, value string, decodeOk bool, checkOk bool) {
+		is := is.New(t).MsgSep(", ").Msg("type=%v, value=%#v, decodeOk=%v, checkOk=%v", typ, value, decodeOk, checkOk)
 		t.Helper()
 		model := EventRuleModel{
 			Type:  typ,
 			Value: value,
 		}
 		rule, err := model.Decode()
-		if (err == nil) != decodeOk {
-			t.Errorf("mismatch decodeOk: type=%v, value=%#v, err=%v\n", typ, value, err)
-		}
+		is.PrependMsg("mismatch decodeOk").Equal(err == nil, decodeOk)
 		if err != nil {
 			return
 		}
+		is = is.PrependMsg("rule.Value=%#v", rule.Value)
 		checkOkActual := rule.Check()
-		if checkOkActual != checkOk {
-			t.Errorf(
-				"mismatch checkOk: type=%v, value=%#v, checkOk=%v, rule.Value=%#v\n",
-				typ,
-				value,
-				checkOkActual,
-				rule.Value,
-			)
-		}
+		is.PrependMsg("mismatch checkOk").Equal(checkOkActual, checkOk)
 	}
-	test(t, "cycleDays", "10", true, true)
+	test(t, "cycleDays", "10", true, false)
 	test(t, "cycleDays", "-1", true, false)
 	test(t, "cycleDays", "2f", false, false)
 	test(t, "cycleLen", "90 23:55:55", true, true)
