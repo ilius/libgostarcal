@@ -1,11 +1,11 @@
 package interval
 
 import (
+	"github.com/ilius/is"
+	"math/rand"
 	"os"
 	"testing"
 	"time"
-	//"strings"
-	"math/rand"
 )
 
 func ShuffleIntervals(a []Interval) {
@@ -17,84 +17,48 @@ func ShuffleIntervals(a []Interval) {
 }
 
 func TestIntervalListByNumList(t *testing.T) {
+	is := is.New(t)
 	nums := []int64{1, 2, 3, 4, 5, 7, 9, 10, 14, 16, 17, 18, 19, 21, 22, 23, 24}
-	t.Log(nums)
-	t.Log(IntervalListByNumList(nums, 3))
+	intervals := IntervalListByNumList(nums, 3)
+	is.Equal(intervals.String(), "1-5] 7 9 10 14 16-19] 21-24]")
 }
 
 func TestIntervalListNormalize(t *testing.T) {
-	testMap := map[string]string{
-		"10-20 20":                                         "10-20 20",
-		"10-20]":                                           "10-20 20",
-		"10-20 20 20":                                      "10-20 20",
-		"10-20] 20-30]":                                    "10-30 30",
-		"10-20 20-30":                                      "10-30",
-		"10-20 20-30 30-40":                                "10-40",
-		"10-20 20-30 25-40":                                "10-40",
-		"1-10 14 2-5 9-13 16-18 17-20 15-16 25-30":         "1-13 14 15-20 25-30",
-		"60-70 0-40 10-50 20-30 80-90 70-80 85-100 110 55": "0-50 55 60-100 110",
-		"-(70-60) -(60-55) -(56-50)":                       "-(70-50)",
-		"-(70-60) -(60-55) -(56-50])":                      "-(70-50) -50",
-	}
-	testCount := len(testMap)
-	succeedCount := 0
-	for testStr, answerStr := range testMap {
-		//t.Log(testStr, "=>", answerStr)
-		testList, testErr := ParseIntervalList(testStr)
-		if testErr != nil {
-			t.Log(testErr)
-			continue
-		}
-		answerList, answerErr := ParseIntervalList(answerStr)
-		if answerErr != nil {
-			t.Log(answerErr)
-			continue
-		}
-		ShuffleIntervals(testList) // FIXME
+	test := func(t *testing.T, input string, normalized string) {
+		is := is.New(t).MsgSep(", ").Msg("input=%#v, normalized=%#v", input, normalized)
+		t.Helper()
+
+		testList, testErr := ParseIntervalList(input)
+		is.NotErr(testErr)
+
+		answerList, answerErr := ParseIntervalList(normalized)
+		is.NotErr(answerErr)
+
+		ShuffleIntervals(testList)
+
 		testList, testErr = testList.Normalize()
-		if testErr != nil {
-			t.Log(testErr)
-			continue
-		}
+		is.NotErr(testErr)
+
 		testList = testList.Humanize()
-		if testList.String() != answerList.String() { // FIXME
-			t.Error("test failed, result doesn't match the answer")
-			t.Error("  testList =", testList)
-			t.Error("answerList =", answerList)
-		} else {
-			succeedCount++
-		}
-		t.Log(testStr, "=>", answerList)
-	}
-	failedCount := testCount - succeedCount
-	t.Logf("%d tests out of %d succeeded, %d failed\n", succeedCount, testCount, failedCount)
-	if failedCount > 0 {
-		t.Fail()
+		is.PrependMsg(
+			"mismatch result, testList=%#v, answerList=%#v",
+			testList.String(),
+			answerList.String(),
+		).Equal(testList.String(), answerList.String())
+		t.Log(input, "=>", answerList)
 	}
 
-	t.Log("len(os.Args) =", len(os.Args))
-
-	/*
-	   argc := len(os.Args)
-	   if argc > 1 {
-	       listStr := strings.Join(os.Args[1:argc], " ")
-	       //listStr :=
-	       list, err := ParseIntervalList(listStr)
-	       if err != nil {
-	           t.Error(err)
-	           return
-	       }
-	       t.Log("Original Intervals:", list)
-	       ShuffleIntervals(list) // FIXME
-	       t.Log("Shuffled Intervals:", list)
-	       list, err = list.Normalize()
-	       if err != nil {
-	           t.Error(err)
-	           return
-	       }
-	       t.Log("    New Intervals:", list)
-	       //t.Logf("    New Intervals: %v\n", list)
-	   }*/
+	test(t, "10-20 20", "10-20 20")
+	test(t, "10-20]", "10-20 20")
+	test(t, "10-20 20 20", "10-20 20")
+	test(t, "10-20] 20-30]", "10-30 30")
+	test(t, "10-20 20-30", "10-30")
+	test(t, "10-20 20-30 30-40", "10-40")
+	test(t, "10-20 20-30 25-40", "10-40")
+	test(t, "1-10 14 2-5 9-13 16-18 17-20 15-16 25-30", "1-13 14 15-20 25-30")
+	test(t, "60-70 0-40 10-50 20-30 80-90 70-80 85-100 110 55", "0-50 55 60-100 110")
+	test(t, "-(70-60) -(60-55) -(56-50)", "-(70-50)")
+	test(t, "-(70-60) -(60-55) -(56-50])", "-(70-50) -50")
 }
 
 func getIntersectionString(t *testing.T, list1Str string, list2Str string) string {
