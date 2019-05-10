@@ -1,12 +1,14 @@
 package ethiopian
 
 import (
+	"github.com/ilius/is"
 	"testing"
 
 	lib "github.com/ilius/libgostarcal"
 )
 
 func TestIsLeap(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[int]bool{
 		1990: false,
 		1991: true,
@@ -50,14 +52,12 @@ func TestIsLeap(t *testing.T) {
 		2029: false,
 	}
 	for year, isLeap := range testMap {
-		if isLeap != IsLeap(year) {
-			t.Errorf("Wrong: year=%v, isLeap=%v", year, isLeap)
-		}
-		//t.Log(year, isLeap)
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
 	}
 }
 
 func TestToJd(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[lib.Date]int{
 		{2015, 1, 1}:  2459834,
 		{2015, 2, 1}:  2459864,
@@ -97,14 +97,12 @@ func TestToJd(t *testing.T) {
 		{2017, 12, 1}: 2460895,
 	}
 	for date, jd := range testMap {
-		if jd != ToJd(date) {
-			t.Errorf("Wrong: date=%v, jd=%v", date, jd)
-		}
-		//t.Log(date, jd)
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
 	}
 }
 
 func TestConvert(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	startYear := 1970
 	endYear := 2050
 	for year := startYear; year < endYear; year++ {
@@ -114,16 +112,7 @@ func TestConvert(t *testing.T) {
 				var date = lib.Date{year, month, day}
 				var jd = ToJd(date)
 				var ndate = JdTo(jd)
-				if date == ndate {
-					//t.Logf("%v  OK\n", date);
-				} else {
-					t.Errorf(
-						"Wrong: %v  =>  jd=%d  =>  %v\n",
-						date,
-						jd,
-						ndate,
-					)
-				}
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
 			}
 		}
 	}
