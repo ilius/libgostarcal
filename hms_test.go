@@ -1,42 +1,34 @@
 package libscal
 
-import "testing"
+import (
+	"github.com/ilius/is"
+	"testing"
+)
 
 func TestHMS_FloatHour(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	hms := HMS{12, 59, 5}
+	is = is.AddMsg("hms=%v", hms)
 	fh := hms.GetFloatHour()
+	is.Equal(12.98472222222222, fh)
 	hms2 := FloatHourToHMS(fh)
-	if fh != 12.98472222222222 {
-		t.Log("Wrong float hour: fh =", fh)
-	}
-	if hms2.String() != "12:59:05" {
-		t.Log("Wrong HMS: hms2 =", hms2)
-	}
-	//t.Log("hms =", hms)
-	//t.Log("fh =", fh)
-	//t.Log("hms2 =", hms2)
+	is.Equal("12:59:05", hms2.String())
 }
 
 func TestParseHMS(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	str := "12:01:01"
+	is = is.AddMsg("str=%v", str)
 	obj, err := ParseHMS(str)
-	//t.Log(obj, err)
-	if err != nil {
-		t.Error(err)
-	}
-	if obj.String() != str {
-		t.Error("Failed to parse HMS:", obj)
-	}
+	is.NotErr(err)
+	is.Equal(str, obj.String())
 }
 
 func TestParseDHMS(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	str := "90 12:01:01"
+	is = is.AddMsg("str=%v", str)
 	obj, err := ParseDHMS(str)
-	//t.Log(obj, err)
-	if err != nil {
-		t.Error(err)
-	}
-	if obj.String() != str {
-		t.Errorf("Failed to parse DHMS: obj = %v", obj)
-	}
+	is.NotErr(err)
+	is.Equal(str, obj.String())
 }
