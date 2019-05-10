@@ -29,7 +29,7 @@ func TestRules(t *testing.T) {
 		checkOkActual := rule.Check()
 		is.PrependMsg("mismatch checkOk").Equal(checkOkActual, checkOk)
 	}
-	test(t, "cycleDays", "10", true, false)
+	test(t, "cycleDays", "10", true, true)
 	test(t, "cycleDays", "-1", true, false)
 	test(t, "cycleDays", "2f", false, false)
 	test(t, "cycleLen", "90 23:55:55", true, true)
