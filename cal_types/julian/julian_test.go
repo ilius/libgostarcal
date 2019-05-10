@@ -1,12 +1,14 @@
 package julian
 
 import (
+	"github.com/ilius/is"
 	"testing"
 
 	lib "github.com/ilius/libgostarcal"
 )
 
 func TestIsLeap(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[int]bool{
 		1990: false,
 		1991: false,
@@ -50,13 +52,12 @@ func TestIsLeap(t *testing.T) {
 		2029: false,
 	}
 	for year, isLeap := range testMap {
-		if isLeap != IsLeap(year) {
-			t.Errorf("Wrong: year=%v, isLeap=%v", year, isLeap)
-		}
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
 	}
 }
 
 func TestToJd(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[lib.Date]int{
 		{2000, 1, 1}: 2451558,
 		{2001, 1, 1}: 2451924,
@@ -88,7 +89,7 @@ func TestToJd(t *testing.T) {
 		{2027, 1, 1}: 2461420,
 		{2028, 1, 1}: 2461785,
 		{2029, 1, 1}: 2462151,
-		//lib.Date{2015, 1, 1}: 2457037,
+		// {2015, 1, 1}: 2457037,
 		{2015, 2, 1}:  2457068,
 		{2015, 3, 1}:  2457096,
 		{2015, 4, 1}:  2457127,
@@ -100,7 +101,7 @@ func TestToJd(t *testing.T) {
 		{2015, 10, 1}: 2457310,
 		{2015, 11, 1}: 2457341,
 		{2015, 12, 1}: 2457371,
-		//lib.Date{2016, 1, 1}: 2457402,
+		// {2016, 1, 1}: 2457402,
 		{2016, 2, 1}:  2457433,
 		{2016, 3, 1}:  2457462,
 		{2016, 4, 1}:  2457493,
@@ -112,7 +113,7 @@ func TestToJd(t *testing.T) {
 		{2016, 10, 1}: 2457676,
 		{2016, 11, 1}: 2457707,
 		{2016, 12, 1}: 2457737,
-		//lib.Date{2017, 1, 1}: 2457768,
+		// {2017, 1, 1}: 2457768,
 		{2017, 2, 1}:  2457799,
 		{2017, 3, 1}:  2457827,
 		{2017, 4, 1}:  2457858,
@@ -126,13 +127,12 @@ func TestToJd(t *testing.T) {
 		{2017, 12, 1}: 2458102,
 	}
 	for date, jd := range testMap {
-		if jd != ToJd(date) {
-			t.Errorf("Wrong: date=%v, jd=%v", date, jd)
-		}
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
 	}
 }
 
 func TestConvert(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	startYear := 1970
 	endYear := 2050
 	for year := startYear; year < endYear; year++ {
@@ -142,16 +142,7 @@ func TestConvert(t *testing.T) {
 				var date = lib.Date{year, month, day}
 				var jd = ToJd(date)
 				var ndate = JdTo(jd)
-				if date == ndate {
-					//t.Logf("%v  OK\n", date);
-				} else {
-					t.Errorf(
-						"Wrong: %v  =>  jd=%d  =>  %v\n",
-						date,
-						jd,
-						ndate,
-					)
-				}
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
 			}
 		}
 	}
