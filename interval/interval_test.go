@@ -3,7 +3,6 @@ package interval
 import (
 	"github.com/ilius/is"
 	"math/rand"
-	"os"
 	"testing"
 	"time"
 )
@@ -65,12 +64,10 @@ func getIntersectionString(t *testing.T, list1Str string, list2Str string) strin
 	list1, err1 := ParseIntervalList(list1Str)
 	list2, err2 := ParseIntervalList(list2Str)
 	if err1 != nil {
-		t.Error(err1)
-		return ""
+		panic(err1)
 	}
 	if err2 != nil {
-		t.Error(err2)
-		return ""
+		panic(err1)
 	}
 	ShuffleIntervals(list1)
 	ShuffleIntervals(list2)
@@ -139,15 +136,5 @@ func TestIntervalListIntersection(t *testing.T) {
 			t.Error("resultStr =", resultStr)
 			t.Error("answerStr =", answerStr)
 		}
-	}
-
-	if len(os.Args) > 2 {
-		list1Str := os.Args[1]
-		list2Str := os.Args[2]
-		resultStr := getIntersectionString(t, list1Str, list2Str)
-		t.Log("")
-		t.Log(" First:", list1Str)
-		t.Log("Second:", list2Str)
-		t.Log("Result:", resultStr)
 	}
 }
