@@ -1,12 +1,14 @@
 package hijri
 
 import (
+	"github.com/ilius/is"
 	"testing"
 
 	lib "github.com/ilius/libgostarcal"
 )
 
 func TestIsLeap(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[int]bool{
 		1410: false,
 		1411: false,
@@ -50,13 +52,12 @@ func TestIsLeap(t *testing.T) {
 		1449: false,
 	}
 	for year, isLeap := range testMap {
-		if isLeap != IsLeap(year) {
-			t.Errorf("Wrong: year=%v, isLeap=%v", year, isLeap)
-		}
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
 	}
 }
 
 func TestToJd(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[lib.Date]int{
 		{1436, 1, 1}:  2456957,
 		{1436, 2, 1}:  2456987,
@@ -108,13 +109,12 @@ func TestToJd(t *testing.T) {
 		{1439, 12, 1}: 2458345,
 	}
 	for date, jd := range testMap {
-		if jd != ToJd(date) {
-			t.Errorf("Wrong: date=%v, jd=%v", date, jd)
-		}
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
 	}
 }
 
 func TestMonthLen(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	testMap := map[[2]int]uint8{
 		{1436, 1}:  30,
 		{1436, 2}:  29,
@@ -166,13 +166,15 @@ func TestMonthLen(t *testing.T) {
 		{1439, 12}: 30,
 	}
 	for ym, mLen := range testMap {
-		if mLen != GetMonthLen(ym[0], uint8(ym[1])) {
-			t.Errorf("Wrong: mLen=%v, year=%v, month=%v", mLen, ym[0], ym[1])
-		}
+		is.AddMsg("mismatch month length, ym=%v", ym).Equal(
+			mLen,
+			GetMonthLen(ym[0], uint8(ym[1])),
+		)
 	}
 }
 
 func TestConvert(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
 	startYear := 1390
 	endYear := 1480
 	for year := startYear; year < endYear; year++ {
@@ -182,16 +184,7 @@ func TestConvert(t *testing.T) {
 				var date = lib.Date{year, month, day}
 				var jd = ToJd(date)
 				var ndate = JdTo(jd)
-				if date == ndate {
-					//t.Logf("%v  OK\n", date);
-				} else {
-					t.Errorf(
-						"Wrong: %v  =>  jd=%d  =>  %v\n",
-						date,
-						jd,
-						ndate,
-					)
-				}
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
 			}
 		}
 	}
