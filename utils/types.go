@@ -29,7 +29,7 @@ func (NilEvent) Location() *time.Location {
 func (NilEvent) CalType() cal_types.CalType {
 	calType, err := cal_types.GetCalType("gregorian")
 	if err != nil {
-		//log.Error(log)
+		panic(err)
 	}
 	return calType
 }
