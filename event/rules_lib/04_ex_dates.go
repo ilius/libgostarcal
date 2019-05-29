@@ -1,7 +1,7 @@
 package rules_lib
 
 import (
-	"log"
+	"fmt"
 
 	lib "github.com/ilius/libgostarcal"
 )
@@ -12,13 +12,12 @@ func init() {
 	checker := func(value interface{}) bool {
 		list, ok := value.([]lib.Date)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_ex_dates,
 				value,
 				value,
-			)
-			return false
+			))
 		}
 		for _, date := range list {
 			if !date.IsValid() {

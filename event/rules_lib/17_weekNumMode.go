@@ -1,7 +1,8 @@
 package rules_lib
 
 import (
-	"log"
+	"fmt"
+
 	lib "github.com/ilius/libgostarcal"
 )
 
@@ -11,13 +12,12 @@ func init() {
 	checker := func(value interface{}) bool {
 		v, ok := value.(string)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_weekNumMode,
 				value,
 				value,
-			)
-			return false
+			))
 		}
 		switch v {
 		case lib.ODD:

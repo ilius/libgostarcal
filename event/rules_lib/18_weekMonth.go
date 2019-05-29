@@ -27,8 +27,10 @@
 
 package rules_lib
 
-import "log"
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 const R_weekMonth = "weekMonth"
 const T_weekMonth = "WeekMonth"
@@ -55,14 +57,14 @@ func init() {
 	checker := func(value interface{}) bool {
 		wm, ok := value.(WeekMonth)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_weekMonth,
 				value,
 				value,
-			)
+			))
 		}
-		return ok && wm.IsValid()
+		return wm.IsValid()
 	}
 	RegisterRuleType(
 		18,

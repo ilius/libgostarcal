@@ -1,7 +1,7 @@
 package rules_lib
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/ilius/libgostarcal/utils"
 )
@@ -12,13 +12,12 @@ func init() {
 	checker := func(value interface{}) bool {
 		list, ok := value.([]int)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_month,
 				value,
 				value,
-			)
-			return false
+			))
 		}
 		return utils.MonthListIsValid(list)
 	}

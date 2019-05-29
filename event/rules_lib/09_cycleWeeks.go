@@ -1,6 +1,6 @@
 package rules_lib
 
-import "log"
+import "fmt"
 
 const R_cycleWeeks = "cycleWeeks"
 
@@ -8,14 +8,14 @@ func init() {
 	checker := func(value interface{}) bool {
 		v, ok := value.(int)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_cycleWeeks,
 				value,
 				value,
-			)
+			))
 		}
-		return ok && v > 0
+		return v > 0
 	}
 	RegisterRuleType(
 		9,

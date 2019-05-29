@@ -1,7 +1,7 @@
 package rules_lib
 
 import (
-	"log"
+	"fmt"
 
 	lib "github.com/ilius/libgostarcal"
 )
@@ -12,14 +12,14 @@ func init() {
 	checker := func(value interface{}) bool {
 		v, ok := value.(lib.DateHMS)
 		if !ok {
-			log.Printf(
+			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",
 				R_end,
 				value,
 				value,
-			)
+			))
 		}
-		return ok && v.IsValid()
+		return v.IsValid()
 	}
 	RegisterRuleType(
 		1,
