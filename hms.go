@@ -137,7 +137,7 @@ func FloatHourToHMS(fh float64) HMS {
 	secondInt := uint8(secondFloat)
 	secondPortion := secondFloat - float64(secondInt)
 	if secondPortion > 0.98 {
-		//secondPortion = 0.0
+		// secondPortion = 0.0
 		secondInt++
 		if secondInt == 60 {
 			secondInt = 0

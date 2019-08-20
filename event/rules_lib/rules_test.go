@@ -1,8 +1,9 @@
 package rules_lib
 
 import (
-	"github.com/ilius/is"
 	"testing"
+
+	"github.com/ilius/is"
 )
 
 type RuleTestCase struct {

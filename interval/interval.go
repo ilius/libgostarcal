@@ -186,9 +186,11 @@ func (p IntervalPointList) Less(i, j int) bool {
 	}
 	return false
 }
+
 func (a IntervalPointList) Sort() {
 	sort.Sort(a)
 }
+
 func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 	pcount := len(points)
 	list := make(IntervalList, 0, pcount/2) // we need no more than `count` spaces
@@ -203,7 +205,7 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 				)
 			}
 			startedStack, start = startedStack.Pop()
-			//fmt.Println("pop:", start, ", new len:", len(startedStack))
+			// fmt.Println("pop:", start, ", new len:", len(startedStack))
 			if len(startedStack) == 0 {
 				list = append(list, Interval{start, point.Pos, point.Closed})
 				// We will replace closed ends (with 2 intervals) after the final operation (intersection)
@@ -212,7 +214,7 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 				// and we won't have a fully normalized IntervalList
 			}
 		} else {
-			//fmt.Println("push:", point.Pos)
+			// fmt.Println("push:", point.Pos)
 			startedStack = startedStack.Push(point.Pos)
 		}
 	}
@@ -228,6 +230,7 @@ func (list IntervalList) String() string {
 	}
 	return strings.Join(parts, " ")
 }
+
 func (list IntervalList) GetPointList(listId int) IntervalPointList {
 	count := len(list)
 	points := make(IntervalPointList, 2*count) // we need exactly `2*count` spaces
@@ -248,6 +251,7 @@ func (list IntervalList) GetPointList(listId int) IntervalPointList {
 	}
 	return points
 }
+
 func (list IntervalList) Humanize() IntervalList {
 	/*
 	   Replace Closed Ends
@@ -263,7 +267,7 @@ func (list IntervalList) Humanize() IntervalList {
 		return list
 	}
 	newLen := len(list) + closedEndCount
-	//if cap(list) >= newLen
+	// if cap(list) >= newLen
 	// we need to insert to slice, can't do it in-place
 	newList := make(IntervalList, 0, newLen)
 	for _, interval := range list {
@@ -292,6 +296,7 @@ func ParseIntervalList(str string) (IntervalList, error) {
 	}
 	return list, nil
 }
+
 func ParseClosedIntervalList(str string) (IntervalList, error) {
 	parts := strings.Split(str, " ")
 	count := len(parts)
@@ -308,11 +313,13 @@ func ParseClosedIntervalList(str string) (IntervalList, error) {
 	}
 	return list, nil
 }
+
 func (list IntervalList) Normalize() (IntervalList, error) {
 	points := list.GetPointList(0)
 	points.Sort()
 	return points.GetIntervalList()
 }
+
 func (list IntervalList) Extract() []int64 {
 	count := 0
 	for _, interval := range list {
@@ -336,6 +343,7 @@ func (list IntervalList) Extract() []int64 {
 func (list IntervalList) Intersection(list2 IntervalList) (IntervalList, error) {
 	return IntersectionOfSomeIntervalLists(list, list2)
 }
+
 func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error) {
 	var err error
 	listCount := len(lists)
@@ -364,9 +372,9 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 	}
 	var hasNil bool
 	var start int64
-	//fmt.Printf("points = %v\n\n", points)
+	// fmt.Printf("points = %v\n\n", points)
 	for _, point := range points {
-		//fmt.Printf("point:    %v\n", point)
+		// fmt.Printf("point:    %v\n", point)
 		if point.IsEnd { // end (closed or open)
 			// end == point.Pos
 			hasNil = false
@@ -374,7 +382,7 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 			for _, tmpStart := range openStartList {
 				if tmpStart == MIN_INT64 {
 					hasNil = true
-					//break // FIXME
+					// break // FIXME
 				}
 				if tmpStart > start {
 					start = tmpStart
@@ -388,18 +396,18 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 					)
 				}
 				if point.Pos > start || point.Closed {
-					//fmt.Println("adding", Interval{start, point.Pos, point.Closed}, "  point  ", point)
+					// fmt.Println("adding", Interval{start, point.Pos, point.Closed}, "  point  ", point)
 					result = append(result, Interval{start, point.Pos, point.Closed})
 				}
 			}
-			//if start == point.Pos:## FIXME
+			// if start == point.Pos:## FIXME
 			//    print('start = point.Pos = %s, IsEnd=%s'%(start%(24*3600)/3600.0, point.IsEnd))
 			openStartList[point.ListId] = MIN_INT64
-			//fmt.Printf("openStartList[%v] = %v\n", point.ListId, MIN_INT64)
+			// fmt.Printf("openStartList[%v] = %v\n", point.ListId, MIN_INT64)
 		} else { // start
 			// start == point.Pos
 			if openStartList[point.ListId] != MIN_INT64 {
-				//for _, list := range lists { fmt.Println(list) }
+				// for _, list := range lists { fmt.Println(list) }
 				return nil, fmt.Errorf(
 					"Internal Error: point:  %v   openStartList: %v",
 					point,
@@ -407,7 +415,7 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 				)
 			}
 			openStartList[point.ListId] = point.Pos
-			//fmt.Printf("openStartList[%v] = %v\n", point.ListId, point.Pos)
+			// fmt.Printf("openStartList[%v] = %v\n", point.ListId, point.Pos)
 
 		}
 	}

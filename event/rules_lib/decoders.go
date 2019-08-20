@@ -1,11 +1,12 @@
 package rules_lib
 
 import (
+	"strconv"
+
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/interval"
 	"github.com/ilius/libgostarcal/utils"
 	//"fmt"
-	"strconv"
 )
 
 var valueDecoders = map[string]func(string) (interface{}, error){

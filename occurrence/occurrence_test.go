@@ -13,7 +13,7 @@ import (
 	. "github.com/ilius/libgostarcal/utils/mapset"
 )
 
-//const time_format = "2006-01-02 15:04:05";
+// const time_format = "2006-01-02 15:04:05";
 const time_format = "2006-01-02 15:04"
 
 func (occur JdOccurSet) String() string {
@@ -69,7 +69,7 @@ func makeJdSet(strList ...string) Set {
 }
 
 func TestOccurSet_1(t *testing.T) {
-	//t.Logf("%v => %v\n", tmStr, makeEpoch("2016-04-06 12:23:00"))
+	// t.Logf("%v => %v\n", tmStr, makeEpoch("2016-04-06 12:23:00"))
 	event := NilEvent{}
 	i := makeInterval
 	occur1 := IntervalOccurSet{event, IntervalList{

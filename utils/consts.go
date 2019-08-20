@@ -16,9 +16,9 @@ var DurationUnitByValue = map[int]string{
 	604800: "week",
 }
 
-//DurationUnitList=[(1, "second"), (60, "minute"), (3600, "hour"), (86400, "day"), (604800, "week")]
+// DurationUnitList=[(1, "second"), (60, "minute"), (3600, "hour"), (86400, "day"), (604800, "week")]
 
 func init() {
-	//fmt.Printf("")
-	//fmt.Println("DurationUnitByValue =", DurationUnitByValue)
+	// fmt.Printf("")
+	// fmt.Println("DurationUnitByValue =", DurationUnitByValue)
 }

@@ -45,6 +45,7 @@ var MonthNames = []string{
 	"Meyabit", "Meyaziya", "Genbot",
 	"Sene", "Hamle", "Nahse",
 }
+
 var MonthNamesAb = []string{
 	"Meskerem", "Tekimt", "Hidar",
 	"Tahsas", "Ter", "Yekoutit",

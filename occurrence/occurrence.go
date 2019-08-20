@@ -36,15 +36,15 @@ func getEventUID(event Event) string {
 type OccurSet interface {
 	GetName() string
 	GetEvent() Event
-	//String() string
-	//Empty() bool
+	// String() string
+	// Empty() bool
 	Len() int
 	GetStartJd() int
 	GetEndJd() int
 	Intersection(OccurSet) (OccurSet, error)
 	GetDaysJdList() []int
 	GetEpochIntervalList() IntervalList
-	//GetJdFloatIntervalList() []FloatInterval // FIXME
+	// GetJdFloatIntervalList() []FloatInterval // FIXME
 }
 
 type JdOccurSet struct {
@@ -57,6 +57,7 @@ func (occur JdOccurSet) GetEvent() Event { return occur.Event }
 func (occur JdOccurSet) Len() int {
 	return occur.JdSet.Cardinality()
 }
+
 func (occur JdOccurSet) GetStartJd() int {
 	jds := occur.JdSet.ToSlice()
 	start := jds[0].(int)
@@ -68,6 +69,7 @@ func (occur JdOccurSet) GetStartJd() int {
 	}
 	return start
 }
+
 func (occur JdOccurSet) GetEndJd() int {
 	jds := occur.JdSet.ToSlice()
 	end := jds[0].(int)
@@ -79,6 +81,7 @@ func (occur JdOccurSet) GetEndJd() int {
 	}
 	return end
 }
+
 func (occur JdOccurSet) Intersection(other OccurSet) (OccurSet, error) {
 	if other.GetName() == "jd" {
 		return JdOccurSet{
@@ -98,17 +101,19 @@ func (occur JdOccurSet) Intersection(other OccurSet) (OccurSet, error) {
 		return IntervalOccurSet{occur.GetEvent(), list}, err
 	}
 }
+
 func (occur JdOccurSet) GetDaysJdList() []int {
 	return IntListBySet(occur.JdSet)
 }
+
 func (occur JdOccurSet) GetEpochIntervalList() IntervalList {
 	loc := occur.GetEvent().Location()
-	//occur.JdSet.RLock()
+	// occur.JdSet.RLock()
 	list := make(IntervalList, 0, occur.Len())
 	for jdI := range occur.JdSet.Iter() {
 		list = append(list, IntervalByJd(jdI.(int), loc))
 	}
-	//occur.JdSet.RUnlock()
+	// occur.JdSet.RUnlock()
 	return list
 }
 
@@ -128,6 +133,7 @@ func (occur IntervalOccurSet) GetEvent() Event { return occur.Event }
 func (occur IntervalOccurSet) Len() int {
 	return len(occur.List)
 }
+
 func (occur IntervalOccurSet) GetStartJd() int {
 	loc := occur.GetEvent().Location()
 	startEpoch := occur.List[0].Start
@@ -138,6 +144,7 @@ func (occur IntervalOccurSet) GetStartJd() int {
 	}
 	return GetJdByEpoch(startEpoch, loc)
 }
+
 func (occur IntervalOccurSet) GetEndJd() int {
 	loc := occur.GetEvent().Location()
 	endEpoch := occur.List[0].End
@@ -148,10 +155,12 @@ func (occur IntervalOccurSet) GetEndJd() int {
 	}
 	return GetJdByEpoch(endEpoch, loc)
 }
+
 func (occur IntervalOccurSet) Intersection(other OccurSet) (OccurSet, error) {
 	list, err := occur.List.Intersection(other.GetEpochIntervalList())
 	return IntervalOccurSet{occur.GetEvent(), list}, err
 }
+
 func (occur IntervalOccurSet) GetDaysJdList() []int {
 	loc := occur.GetEvent().Location()
 	/*
@@ -179,6 +188,7 @@ func (occur IntervalOccurSet) GetDaysJdList() []int {
 	}
 	return IntListBySet(jdSet)
 }
+
 func (occur IntervalOccurSet) GetEpochIntervalList() IntervalList {
 	return occur.List
 }

@@ -437,7 +437,6 @@ func benchIter(b *testing.B, n int, s Set) {
 	for i := 0; i < b.N; i++ {
 		c := s.Iter()
 		for range c {
-
 		}
 	}
 }

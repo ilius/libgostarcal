@@ -172,7 +172,7 @@ func GetJdByEpoch(epoch int64, loc *time.Location) int {
 	return int(math.Floor(GetFloatJdByEpoch(epoch, loc)))
 }
 
-//RoundEpochToDay // not useful
+// RoundEpochToDay // not useful
 
 func GetJdRangeFromEpochRange(startEpoch int64, endEpoch int64, loc *time.Location) (int, int) {
 	startJd := GetJdByEpoch(startEpoch, loc)

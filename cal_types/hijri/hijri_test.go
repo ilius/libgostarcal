@@ -1,8 +1,9 @@
 package hijri
 
 import (
-	"github.com/ilius/is"
 	"testing"
+
+	"github.com/ilius/is"
 
 	lib "github.com/ilius/libgostarcal"
 )
@@ -179,11 +180,11 @@ func TestConvert(t *testing.T) {
 	endYear := 1480
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
-			var monthLen = GetMonthLen(year, month)
+			monthLen := GetMonthLen(year, month)
 			for day := uint8(1); day <= monthLen; day++ {
-				var date = lib.Date{year, month, day}
-				var jd = ToJd(date)
-				var ndate = JdTo(jd)
+				date := lib.Date{year, month, day}
+				jd := ToJd(date)
+				ndate := JdTo(jd)
 				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
 			}
 		}

@@ -58,36 +58,47 @@ type calTypeStruct struct {
 func (ct *calTypeStruct) Name() string {
 	return ct.name
 }
+
 func (ct *calTypeStruct) Desc() string {
 	return ct.desc
 }
+
 func (ct *calTypeStruct) Epoch() int {
 	return ct.epoch
 }
+
 func (ct *calTypeStruct) MinMonthLen() uint8 {
 	return ct.minMonthLen
 }
+
 func (ct *calTypeStruct) MaxMonthLen() uint8 {
 	return ct.maxMonthLen
 }
+
 func (ct *calTypeStruct) AvgYearLen() float64 {
 	return ct.avgYearLen
 }
+
 func (ct *calTypeStruct) MonthNames() []string {
 	return ct.monthNames
 }
+
 func (ct *calTypeStruct) MonthNamesAb() []string {
 	return ct.monthNamesAb
 }
+
 func (ct *calTypeStruct) IsLeap(year int) bool {
 	return ct.isLeap(year)
 }
+
 func (ct *calTypeStruct) ToJd(date lib.Date) int {
 	return ct.toJd(date)
 }
+
 func (ct *calTypeStruct) JdTo(jd int) lib.Date {
 	return ct.jdTo(jd)
 }
+
 func (ct *calTypeStruct) GetMonthLen(year int, month uint8) uint8 {
 	return ct.getMonthLen(year, month)
 }
@@ -125,7 +136,6 @@ func RegisterCalType(
 	}
 	CalTypesList = append(CalTypesList, calType)
 	CalTypesMap[name] = calType
-
 }
 
 func invalidCalType(calTypeName string) error {
@@ -159,6 +169,7 @@ func ToJd(date lib.Date, calTypeName string) (int, error) {
 	}
 	return calType.ToJd(date), nil
 }
+
 func JdTo(jd int, calTypeName string) (lib.Date, error) {
 	calType, calTypeOk := CalTypesMap[calTypeName]
 	if !calTypeOk {

@@ -10,15 +10,15 @@ import (
 )
 
 func TestTimeZone(t *testing.T) {
-	//t := time.Now()// .In(loc)
-	//loc := tm.Location()
-	//loc, err := time.LoadLocation("Asia/Tehran")
+	// t := time.Now()// .In(loc)
+	// loc := tm.Location()
+	// loc, err := time.LoadLocation("Asia/Tehran")
 	loc, err := time.LoadLocation("UTC")
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log("Location:", loc)
-	//date := CalTypesMap["gregorian"].JdTo(jd)
+	// date := CalTypesMap["gregorian"].JdTo(jd)
 	date, _ := GetCurrentDate("gregorian")
 	t.Log("Date:", date)
 	startJd := gregorian.ToJd(lib.Date{2016, 1, 1})
@@ -38,12 +38,12 @@ func TestTimeZone(t *testing.T) {
 		)
 		epoch2 := tm.Unix()
 		if epoch1 == epoch2 {
-			//t.Log("Epoch OK")
+			// t.Log("Epoch OK")
 		} else {
 			t.Error("EPOCH MISATCH, delta =", epoch2-epoch1, "  , gdate =", gdate)
 		}
 		floatJd := GetFloatJdByEpoch(epoch1, loc)
-		//t.Log("floatJd = %f\n", floatJd)
+		// t.Log("floatJd = %f\n", floatJd)
 		dayPortion := floatJd - float64(int(floatJd))
 		if dayPortion > 0 {
 			t.Logf("Warning: gdate=%v, dayPortion = %f\n", gdate, dayPortion)
@@ -59,8 +59,8 @@ func TestGetJdListFromEpochRange(t *testing.T) {
 	randSec1 := int64(rand.Int() % (24 * 3600))
 	rand.Seed(time.Now().UnixNano())
 	randSec2 := int64(rand.Int() % (24 * 3600))
-	//tm := time.Now()
-	//loc := tm.Location()
+	// tm := time.Now()
+	// loc := tm.Location()
 	loc, err := time.LoadLocation("Asia/Tehran")
 	if err != nil {
 		t.Error(err)
@@ -85,9 +85,9 @@ func TestGetJhmsByEpoch(t *testing.T) {
 	epoch := tm.Unix()
 	loc := tm.Location()
 	jd, hms := GetJhmsByEpoch(epoch, loc)
-	//t.Log("GetJhmsByEpoch =", jd, hms)
+	// t.Log("GetJhmsByEpoch =", jd, hms)
 	epoch2 := GetEpochByJhms(jd, hms, loc)
-	//t.Log("epoch2 - epoch =", epoch2 - epoch)
+	// t.Log("epoch2 - epoch =", epoch2 - epoch)
 	if epoch2 != epoch {
 		t.Errorf("%v != %v", epoch2, epoch)
 	}
@@ -95,5 +95,5 @@ func TestGetJhmsByEpoch(t *testing.T) {
 	if jd2 != jd {
 		t.Errorf("%v != %v", jd2, jd)
 	}
-	//t.Log(jd2, sec)
+	// t.Log(jd2, sec)
 }

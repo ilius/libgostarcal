@@ -45,6 +45,7 @@ var MonthNames = []string{
 	"Rajab", "Sha'aban", "Ramadan",
 	"Shawwal", "Dhu'l Qidah", "Dhu'l Hijjah",
 }
+
 var MonthNamesAb = []string{
 	"Moh", "Saf", "Rb1",
 	"Rb2", "Jm1", "Jm2",

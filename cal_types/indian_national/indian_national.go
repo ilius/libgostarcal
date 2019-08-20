@@ -44,6 +44,7 @@ var MonthNames = []string{
 	"Chaitra", "Vaishākh", "Jyaishtha", "Āshādha", "Shrāvana", "Bhādrapad",
 	"Āshwin", "Kārtik", "Agrahayana", "Paush", "Māgh", "Phālgun",
 }
+
 var MonthNamesAb = []string{
 	"Cha", "Vai", "Jya", "Āsh", "Shr", "Bhā",
 	"Āsw", "Kār", "Agr", "Pau", "Māg", "Phā",
@@ -108,7 +109,6 @@ func ToJd(date lib.Date) int {
 		jd = jdFirstDayOfYear + daysInMonth1 + 5*31 + (int(date.Month)-7)*30 + int(date.Day) - 1
 	}
 	return jd
-
 }
 
 func JdTo(jd int) lib.Date {

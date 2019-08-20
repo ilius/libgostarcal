@@ -41,6 +41,7 @@ var MonthNames = []string{
 	"January", "February", "March", "April", "May", "June",
 	"July", "August", "September", "October", "November", "December",
 }
+
 var MonthNamesAb = []string{
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -48,7 +49,7 @@ var MonthNamesAb = []string{
 
 // ###### Other Globals  #######
 
-//const J0001 = Epoch
+// const J0001 = Epoch
 const J1970 = 2440588
 
 // #############################

@@ -16,9 +16,11 @@ type Date struct {
 func (date Date) String() string {
 	return fmt.Sprintf("%.4d/%.2d/%.2d", date.Year, date.Month, date.Day)
 }
+
 func (date Date) Repr() string {
 	return fmt.Sprintf("lib.Date{%d, %d, %d}", date.Year, date.Month, date.Day)
 }
+
 func (date Date) IsValid() bool {
 	return date.Month > 0 && date.Month < 13 && date.Day > 0 && date.Day < 40
 }
@@ -44,7 +46,6 @@ func ParseDate(str string) (Date, error) {
 		return Date{}, err
 	}
 	return Date{int(y), uint8(m), uint8(d)}, nil
-
 }
 
 func ParseDateList(str string) ([]Date, error) {
@@ -68,12 +69,15 @@ type DateHMS struct {
 func (dt DateHMS) String() string {
 	return dt.Date.String() + " " + dt.HMS.String()
 }
+
 func (dt DateHMS) Repr() string {
 	return fmt.Sprintf("lib.DateHMS{{%s}, {%s}}", dt.Date, dt.HMS)
 }
+
 func (dt DateHMS) IsValid() bool {
 	return dt.Date.IsValid() && dt.HMS.IsValid()
 }
+
 func ParseDateHMS(str string) (DateHMS, error) {
 	parts := strings.Split(str, " ")
 	if len(parts) != 2 {

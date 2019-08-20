@@ -1,10 +1,11 @@
 package interval
 
 import (
-	"github.com/ilius/is"
 	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/ilius/is"
 )
 
 func ShuffleIntervals(a []Interval) {
