@@ -71,8 +71,14 @@ var monthLenSum = []int{
 	365,
 }
 
+// Python-compatible divmod
 func divmod(a int, b int) (int, int) {
-	return a / b, a % b
+	var div int = a / b
+	var mod int = a % b
+	if (mod < 0 && b > 0) || (mod > 0 && b < 0) {
+		return div - 1, mod + b
+	}
+	return div, mod
 }
 
 // #############################

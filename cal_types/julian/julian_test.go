@@ -8,6 +8,27 @@ import (
 	lib "github.com/ilius/libgostarcal"
 )
 
+func TestDivmod(t *testing.T) {
+	is := is.New(t).MsgSep(", ")
+	testMap := map[[2]int][2]int{
+		{-20, -10}: {2, 0},
+		{20, -10}:  {-2, 0},
+		{-20, 10}:  {-2, 0},
+		{-23, -10}: {2, -3},
+		{-23, 10}:  {-3, 7},
+		{-13, 10}:  {-2, 7},
+		{12, 10}:   {1, 2},
+		{22, 10}:   {2, 2},
+	}
+	for ab, dm := range testMap {
+		a := ab[0]
+		b := ab[1]
+		div, mod := divmod(a, b)
+		is.AddMsg("mismatch div, a=%v, b=%v", a, b).Equal(div, dm[0])
+		is.AddMsg("mismatch mod, a=%v, b=%v", a, b).Equal(mod, dm[1])
+	}
+}
+
 func TestIsLeap(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
 	testMap := map[int]bool{
@@ -60,6 +81,11 @@ func TestIsLeap(t *testing.T) {
 func TestToJd(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
 	testMap := map[lib.Date]int{
+		{-1000, 1, 1}: 1355808,
+		{-3, 1, 1}:    1719963,
+		{-2, 1, 1}:    1720328,
+		{-1, 1, 1}:    1720693,
+
 		{2000, 1, 1}: 2451558,
 		{2001, 1, 1}: 2451924,
 		{2002, 1, 1}: 2452289,
