@@ -98,7 +98,7 @@ func TestToJd(t *testing.T) {
 		{1396, 12, 1}: 2458170,
 	}
 	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
 	}
 }
 
@@ -113,7 +113,7 @@ func TestConvert(t *testing.T) {
 				date := lib.Date{year, month, day}
 				jd := ToJd(date)
 				ndate := JdTo(jd)
-				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
 			}
 		}
 	}
