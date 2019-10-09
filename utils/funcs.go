@@ -180,8 +180,12 @@ func GetJdRangeFromEpochRange(startEpoch int64, endEpoch int64, loc *time.Locati
 	return startJd, endJd
 }
 
-func GetHmsBySeconds(second int) lib.HMS {
-	return lib.HMS{uint8(second / 3600), uint8(second / 60), uint8(second % 60)}
+func GetHmsBySeconds(second uint) lib.HMS {
+	return lib.HMS{
+		uint8(second / 3600),
+		uint8(second / 60),
+		uint8(second % 60), // safe %
+	}
 }
 
 func GetJhmsByEpoch(epoch int64, loc *time.Location) (int, lib.HMS) {
