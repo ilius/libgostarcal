@@ -43,7 +43,7 @@ func TestIsLeap(t *testing.T) {
 		1949: false,
 	}
 	for year, isLeap := range testMap {
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
 	}
 }
 
@@ -88,7 +88,7 @@ func TestToJd(t *testing.T) {
 		{1938, 12, 1}: 2457805,
 	}
 	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
 	}
 }
 
@@ -103,7 +103,7 @@ func TestConvert(t *testing.T) {
 				date := lib.Date{year, month, day}
 				jd := ToJd(date)
 				ndate := JdTo(jd)
-				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
 			}
 		}
 	}

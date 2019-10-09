@@ -53,7 +53,7 @@ func TestIsLeap(t *testing.T) {
 		1449: false,
 	}
 	for year, isLeap := range testMap {
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
 	}
 }
 
@@ -110,7 +110,7 @@ func TestToJd(t *testing.T) {
 		{1439, 12, 1}: 2458345,
 	}
 	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(jd, ToJd(date))
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
 	}
 }
 
@@ -168,8 +168,8 @@ func TestMonthLen(t *testing.T) {
 	}
 	for ym, mLen := range testMap {
 		is.AddMsg("mismatch month length, ym=%v", ym).Equal(
-			mLen,
 			GetMonthLen(ym[0], uint8(ym[1])),
+			mLen,
 		)
 	}
 }
@@ -185,7 +185,7 @@ func TestConvert(t *testing.T) {
 				date := lib.Date{year, month, day}
 				jd := ToJd(date)
 				ndate := JdTo(jd)
-				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(date, ndate)
+				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
 			}
 		}
 	}
