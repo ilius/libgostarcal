@@ -69,10 +69,6 @@ var monthLen = []uint8{
 	365,
 }*/
 
-func divmod(a int, b int) (int, int) {
-	return a / b, a % b
-}
-
 // #############################
 
 func init() {
