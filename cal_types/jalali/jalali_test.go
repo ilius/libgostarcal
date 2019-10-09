@@ -53,13 +53,21 @@ func TestIsLeap(t *testing.T) {
 		1399: true,
 	}
 	for year, isLeap := range testMap {
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(isLeap, IsLeap(year))
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
 	}
 }
 
 func TestToJd(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
 	testMap := map[lib.Date]int{
+		// FIXME: uncomment after switching to 33-years algorithm
+		// {0, 1, 1}: 1947955,
+		// {100, 1, 1}: 1984479,
+		// {200, 1, 1}: 2021004,
+		// {300, 1, 1}: 2057528,
+		// {400, 1, 1}: 2094052,
+		// {400, 2, 1}: 2094083,
+
 		{1394, 1, 1}:  2457103,
 		{1394, 2, 1}:  2457134,
 		{1394, 3, 1}:  2457165,
