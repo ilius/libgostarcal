@@ -81,10 +81,10 @@ func init() {
 func IsLeap(year int) bool {
 	// return true if year is leap, false otherwise
 	// using 2820-years algorithm
-	if year > 0 {
+	if year > -2 {
 		year--
 	}
-	return (((year-473)%2820)*682)%2816 < 682
+	return Mod((Mod(year-473, 2820))*682, 2816) < 682
 }
 
 func ToJd(date lib.Date) int {
@@ -94,9 +94,9 @@ func ToJd(date lib.Date) int {
 	if date.Year >= 0 {
 		epbase = date.Year - 474
 	} else {
-		epbase = 473
+		epbase = date.Year - 473
 	}
-	epyear := 474 + epbase%2820
+	epyear := 474 + Mod(epbase, 2820)
 	mm := int(date.Month - 1)
 	jd := int(date.Day) +
 		mm*30 + IntMin(6, mm) +
@@ -111,13 +111,13 @@ func JdTo(jd int) lib.Date {
 	// calculate Jalali date from Julian day
 	// using 2820-years algorithm
 	deltaDays := jd - ToJd(lib.Date{475, 1, 1})
-	cycle := deltaDays / 1029983
-	cyear := deltaDays % 1029983
+	cycle, cyear := Divmod(deltaDays, 1029983)
 	var ycycle int
 	if cyear == 1029982 {
 		ycycle = 2820
 	} else {
-		ycycle = (2134*(cyear/366)+2816*(cyear%366)+2815)/1028522 + cyear/366 + 1
+		aux1, aux2 := Divmod(cyear, 366)
+		ycycle = (2134*aux1+2816*aux2+2815)/1028522 + cyear/366 + 1
 	}
 	year := 2820*cycle + ycycle + 474
 	if year <= 0 {
