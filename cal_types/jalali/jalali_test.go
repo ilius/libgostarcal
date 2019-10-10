@@ -9,6 +9,7 @@ import (
 )
 
 func TestIsLeap(t *testing.T) {
+	defer SetAlgorithm2820(alg2820)
 	is := is.New(t).MsgSep(", ")
 	// the values are 2-letter strings
 	// the first letter is for 33-year algorithm (which is not implemented yet)
@@ -174,77 +175,103 @@ func TestIsLeap(t *testing.T) {
 		1407: "  ",
 		1408: "LL",
 	}
-	for year, isLeapStr := range testMap {
-		isLeap := isLeapStr[1] == 'L'
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
+	for algIndex, alg2820 := range []bool{false, true} {
+		SetAlgorithm2820(alg2820)
+		for year, isLeapStr := range testMap {
+			isLeap := isLeapStr[algIndex] == 'L'
+			is.AddMsg(
+				"mismatch isLeap, year=%v, alg2820=%v",
+				year,
+				alg2820,
+			).Equal(IsLeap(year), isLeap)
+		}
 	}
 }
 
 func TestToJd(t *testing.T) {
+	defer SetAlgorithm2820(alg2820)
 	is := is.New(t).MsgSep(", ")
-	testMap := map[lib.Date]int{
-		// FIXME: uncomment after switching to 33-years algorithm
-		// {0, 1, 1}: 1947955,
-		// {100, 1, 1}: 1984479,
-		// {200, 1, 1}: 2021004,
-		// {300, 1, 1}: 2057528,
-		// {400, 1, 1}: 2094052,
-		// {400, 2, 1}: 2094083,
+	testMap := map[lib.Date][2]int{
+		{0, 1, 1}:   {1947955, 1947955},
+		{100, 1, 1}: {1984479, 1984480}, // mismatch
+		{200, 1, 1}: {2021004, 2021004},
+		{300, 1, 1}: {2057528, 2057528},
+		{400, 1, 1}: {2094052, 2094052},
+		{400, 2, 1}: {2094083, 2094083},
 
-		{1394, 1, 1}:  2457103,
-		{1394, 2, 1}:  2457134,
-		{1394, 3, 1}:  2457165,
-		{1394, 4, 1}:  2457196,
-		{1394, 5, 1}:  2457227,
-		{1394, 6, 1}:  2457258,
-		{1394, 7, 1}:  2457289,
-		{1394, 8, 1}:  2457319,
-		{1394, 9, 1}:  2457349,
-		{1394, 10, 1}: 2457379,
-		{1394, 11, 1}: 2457409,
-		{1394, 12, 1}: 2457439,
-		{1395, 1, 1}:  2457468,
-		{1395, 2, 1}:  2457499,
-		{1395, 3, 1}:  2457530,
-		{1395, 4, 1}:  2457561,
-		{1395, 5, 1}:  2457592,
-		{1395, 6, 1}:  2457623,
-		{1395, 7, 1}:  2457654,
-		{1395, 8, 1}:  2457684,
-		{1395, 9, 1}:  2457714,
-		{1395, 10, 1}: 2457744,
-		{1395, 11, 1}: 2457774,
-		{1395, 12, 1}: 2457804,
-		{1396, 1, 1}:  2457834,
-		{1396, 2, 1}:  2457865,
-		{1396, 3, 1}:  2457896,
-		{1396, 4, 1}:  2457927,
-		{1396, 5, 1}:  2457958,
-		{1396, 6, 1}:  2457989,
-		{1396, 7, 1}:  2458020,
-		{1396, 8, 1}:  2458050,
-		{1396, 9, 1}:  2458080,
-		{1396, 10, 1}: 2458110,
-		{1396, 11, 1}: 2458140,
-		{1396, 12, 1}: 2458170,
+		{1394, 1, 1}:  {2457103, 2457103},
+		{1394, 2, 1}:  {2457134, 2457134},
+		{1394, 3, 1}:  {2457165, 2457165},
+		{1394, 4, 1}:  {2457196, 2457196},
+		{1394, 5, 1}:  {2457227, 2457227},
+		{1394, 6, 1}:  {2457258, 2457258},
+		{1394, 7, 1}:  {2457289, 2457289},
+		{1394, 8, 1}:  {2457319, 2457319},
+		{1394, 9, 1}:  {2457349, 2457349},
+		{1394, 10, 1}: {2457379, 2457379},
+		{1394, 11, 1}: {2457409, 2457409},
+		{1394, 12, 1}: {2457439, 2457439},
+		{1395, 1, 1}:  {2457468, 2457468},
+		{1395, 2, 1}:  {2457499, 2457499},
+		{1395, 3, 1}:  {2457530, 2457530},
+		{1395, 4, 1}:  {2457561, 2457561},
+		{1395, 5, 1}:  {2457592, 2457592},
+		{1395, 6, 1}:  {2457623, 2457623},
+		{1395, 7, 1}:  {2457654, 2457654},
+		{1395, 8, 1}:  {2457684, 2457684},
+		{1395, 9, 1}:  {2457714, 2457714},
+		{1395, 10, 1}: {2457744, 2457744},
+		{1395, 11, 1}: {2457774, 2457774},
+		{1395, 12, 1}: {2457804, 2457804},
+		{1396, 1, 1}:  {2457834, 2457834},
+		{1396, 2, 1}:  {2457865, 2457865},
+		{1396, 3, 1}:  {2457896, 2457896},
+		{1396, 4, 1}:  {2457927, 2457927},
+		{1396, 5, 1}:  {2457958, 2457958},
+		{1396, 6, 1}:  {2457989, 2457989},
+		{1396, 7, 1}:  {2458020, 2458020},
+		{1396, 8, 1}:  {2458050, 2458050},
+		{1396, 9, 1}:  {2458080, 2458080},
+		{1396, 10, 1}: {2458110, 2458110},
+		{1396, 11, 1}: {2458140, 2458140},
+		{1396, 12, 1}: {2458170, 2458170},
 	}
-	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
+	for algIndex, alg2820 := range []bool{false, true} {
+		SetAlgorithm2820(alg2820)
+		for date, jdByAlg := range testMap {
+			jd := jdByAlg[algIndex]
+			is.AddMsg(
+				"mismatch jd, date=%v, jd=%v, alg2820=%v",
+				date,
+				jd,
+				alg2820,
+			).Equal(ToJd(date), jd)
+		}
 	}
 }
 
 func TestConvert(t *testing.T) {
+	defer SetAlgorithm2820(alg2820)
 	is := is.New(t).MsgSep(", ")
 	startYear := 1350
 	endYear := 1450
-	for year := startYear; year < endYear; year++ {
-		for month := uint8(1); month <= 12; month++ {
-			monthLen := GetMonthLen(year, month)
-			for day := uint8(1); day <= monthLen; day++ {
-				date := lib.Date{year, month, day}
-				jd := ToJd(date)
-				ndate := JdTo(jd)
-				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
+	for _, alg2820 := range []bool{false, true} {
+		SetAlgorithm2820(alg2820)
+		for year := startYear; year < endYear; year++ {
+			for month := uint8(1); month <= 12; month++ {
+				monthLen := GetMonthLen(year, month)
+				for day := uint8(1); day <= monthLen; day++ {
+					date := lib.Date{year, month, day}
+					jd := ToJd(date)
+					ndate := JdTo(jd)
+					is.AddMsg(
+						"jd=%v, date=%v, ndate=%v, alg2820=%v",
+						jd,
+						date,
+						ndate,
+						alg2820,
+					).Equal(ndate, date)
+				}
 			}
 		}
 	}

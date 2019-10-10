@@ -27,6 +27,7 @@ import (
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
+	"log"
 )
 
 // ###### Common Globals #######
@@ -40,6 +41,8 @@ const (
 	MaxMonthLen uint8 = 31
 
 	AvgYearLen = 365.2425 // FIXME
+
+	GREGORIAN_EPOCH = 1721426
 )
 
 var MonthNames = []string{
@@ -56,6 +59,8 @@ var MonthNamesAb = []string{
 
 var monthLen = []uint8{31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30}
 var monthLenSum = []int{0, 31, 62, 93, 124, 155, 186, 216, 246, 276, 306, 336, 366}
+
+var alg2820 bool = false
 
 // #############################
 
@@ -76,56 +81,100 @@ func init() {
 	)
 }
 
+// SetAlgorithm2820: enable 2820-year algorithm by passing true
+func SetAlgorithm2820(useAlg2820 bool) {
+	log.Printf("jalali.go: SetAlgorithm2820(%v)\n", useAlg2820)
+	alg2820 = useAlg2820
+}
+
+// IsLeap: return true if year is leap, false otherwise
 // Normal: esfand = 29 days
 // Leap: esfand = 30 days
 func IsLeap(year int) bool {
-	// return true if year is leap, false otherwise
-	// using 2820-years algorithm
-	if year > -2 {
-		year--
+	if alg2820 {
+		// using 2820-years algorithm
+		if year > -2 {
+			year--
+		}
+		return Mod((Mod(year-473, 2820))*682, 2816) < 682
 	}
-	return Mod((Mod(year-473, 2820))*682, 2816) < 682
+	jy := year - 979
+	jyd, jym := Divmod(jy, 33)
+	jyd2, jym2 := Divmod(jy+1, 33)
+	return 1 == (jyd2-jyd)*8+(jym2+3)/4-(jym+3)/4
 }
 
+// ToJd: calculate Julian day from Jalali date
 func ToJd(date lib.Date) int {
-	// calculate Julian day from Jalali date
-	// using 2820-years algorithm
-	var epbase int
-	if date.Year >= 0 {
-		epbase = date.Year - 474
-	} else {
-		epbase = date.Year - 473
+	if alg2820 {
+		// using 2820-years algorithm
+		epbase := date.Year - 474
+		if date.Year < 0 {
+			epbase--
+		}
+		epbase_d, epbase_m := Divmod(epbase, 2820)
+		epyear := 474 + epbase_m
+		mm := int(date.Month - 1)
+		return int(date.Day) +
+			mm*30 + IntMin(6, mm) +
+			Div(epyear*682-110, 2816) +
+			(epyear-1)*365 +
+			epbase_d*1029983 +
+			Epoch - 1
 	}
-	epyear := 474 + Mod(epbase, 2820)
-	mm := int(date.Month - 1)
-	jd := int(date.Day) +
-		mm*30 + IntMin(6, mm) +
-		(epyear*682-110)/2816 +
-		(epyear-1)*365 +
-		epbase/2820*1029983 +
-		Epoch - 1
-	return jd
+	jy := date.Year - 979
+	jyd, jym := Divmod(jy, 33)
+	return 365*jy +
+		jyd*8 +
+		Div(jym+3, 4) +
+		monthLenSum[date.Month-1] +
+		int(date.Day) - 1 +
+		584101 +
+		GREGORIAN_EPOCH
 }
 
-func JdTo(jd int) lib.Date {
-	// calculate Jalali date from Julian day
-	// using 2820-years algorithm
-	deltaDays := jd - ToJd(lib.Date{475, 1, 1})
-	cycle, cyear := Divmod(deltaDays, 1029983)
-	var ycycle int
-	if cyear == 1029982 {
-		ycycle = 2820
-	} else {
-		aux1, aux2 := Divmod(cyear, 366)
-		ycycle = (2134*aux1+2816*aux2+2815)/1028522 + cyear/366 + 1
-	}
-	year := 2820*cycle + ycycle + 474
-	if year <= 0 {
-		year--
-	}
-	yday := jd - ToJd(lib.Date{year, 1, 1}) + 1
+func getMonthDayFromYdays(yday int) (uint8, uint8) {
 	month := uint8(BisectLeft(monthLenSum, yday))
 	day := uint8(yday - monthLenSum[month-1])
+	return month, day
+}
+
+// JdTo: calculate Jalali date from Julian day
+func JdTo(jd int) lib.Date {
+	if alg2820 {
+		// using 2820-years algorithm
+		deltaDays := jd - ToJd(lib.Date{475, 1, 1})
+		cycle, cyear := Divmod(deltaDays, 1029983)
+		var ycycle int
+		if cyear == 1029982 {
+			ycycle = 2820
+		} else {
+			aux1, aux2 := Divmod(cyear, 366)
+			// cyear >= 0, aux2 >= 0
+			ycycle = Div(2134*aux1+2816*aux2+2815, 1028522) + cyear/366 + 1
+		}
+		year := 2820*cycle + ycycle + 474
+		if year <= 0 {
+			year--
+		}
+		yday := jd - ToJd(lib.Date{year, 1, 1}) + 1
+		month, day := getMonthDayFromYdays(yday)
+		return lib.Date{year, month, day}
+	}
+	jdays := int(jd - GREGORIAN_EPOCH - 584101)
+	// -(1600*365 + 1600//4 - 1600//100 + 1600//400) + 365-79+1 == -584101
+	j_np, jdays := Divmod(jdays, 12053)
+
+	yearFact, jdays := Divmod(jdays, 1461)
+	year := 979 + 33*j_np + 4*yearFact
+
+	if jdays >= 366 {
+		var yearPlus int
+		yearPlus, jdays = Divmod(jdays-1, 365)
+		year += yearPlus
+	}
+	yday := jdays + 1
+	month, day := getMonthDayFromYdays(yday)
 	return lib.Date{year, month, day}
 }
 
