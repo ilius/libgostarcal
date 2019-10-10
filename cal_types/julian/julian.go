@@ -23,6 +23,7 @@ package julian
 import (
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/cal_types"
+	. "github.com/ilius/libgostarcal/utils"
 )
 
 // ###### Common Globals #######
@@ -71,16 +72,6 @@ var monthLenSum = []int{
 	365,
 }
 
-// Python-compatible divmod
-func divmod(a int, b int) (int, int) {
-	var div int = a / b
-	var mod int = a % b
-	if (mod < 0 && b > 0) || (mod > 0 && b < 0) {
-		return div - 1, mod + b
-	}
-	return div, mod
-}
-
 // #############################
 
 func init() {
@@ -124,7 +115,7 @@ func getMonthDayFromYdays(yDays int, leap bool) (uint8, uint8) {
 }
 
 func ToJd(date lib.Date) int {
-	quadCount, yMode := divmod(date.Year, 4)
+	quadCount, yMode := Divmod(date.Year, 4)
 	return (Epoch +
 		1461*quadCount +
 		365*yMode +
@@ -133,14 +124,14 @@ func ToJd(date lib.Date) int {
 }
 
 func JdTo(jd int) lib.Date {
-	quadCount, quadDays := divmod(jd-Epoch, 1461)
+	quadCount, quadDays := Divmod(jd-Epoch, 1461)
 
 	if quadDays == 0 {
 		// first day of quad (and year)
 		return lib.Date{4 * quadCount, 1, 1}
 	}
 
-	yMode, yDays := divmod(quadDays-1, 365)
+	yMode, yDays := Divmod(quadDays-1, 365)
 	yDays += 1
 	year := 4*quadCount + yMode
 	month, day := getMonthDayFromYdays(yDays, yMode == 0)
