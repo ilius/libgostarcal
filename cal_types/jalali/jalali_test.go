@@ -10,7 +10,7 @@ import (
 
 func TestIsLeap(t *testing.T) {
 	defer SetAlgorithm2820(alg2820)
-	is := is.New(t).MsgSep(", ")
+	is := is.New(t).Lax().MsgSep(", ")
 	// the values are 2-letter strings
 	// the first letter is for 33-year algorithm (which is not implemented yet)
 	// the second lettee is for 2820 algorithm (currently used)
@@ -190,7 +190,7 @@ func TestIsLeap(t *testing.T) {
 
 func TestToJd(t *testing.T) {
 	defer SetAlgorithm2820(alg2820)
-	is := is.New(t).MsgSep(", ")
+	is := is.New(t).Lax().MsgSep(", ")
 	testMap := map[lib.Date][2]int{
 		{0, 1, 1}:   {1947955, 1947955},
 		{100, 1, 1}: {1984479, 1984480}, // mismatch
@@ -252,7 +252,7 @@ func TestToJd(t *testing.T) {
 
 func TestConvert(t *testing.T) {
 	defer SetAlgorithm2820(alg2820)
-	is := is.New(t).MsgSep(", ")
+	is := is.New(t).Lax().MsgSep(", ")
 	startYear := 1350
 	endYear := 1450
 	for _, alg2820 := range []bool{false, true} {
