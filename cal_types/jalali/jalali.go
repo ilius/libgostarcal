@@ -93,10 +93,12 @@ func SetAlgorithm2820(useAlg2820 bool) {
 func IsLeap(year int) bool {
 	if alg2820 {
 		// using 2820-years algorithm
-		if year > -2 {
-			year--
+		/* if we want to remove Year Zero:
+		if year < 1 {
+			year++
 		}
-		return Mod((Mod(year-473, 2820))*682, 2816) < 682
+		*/
+		return Mod((Mod(year-474, 2820))*682, 2816) < 682
 	}
 	jy := year - 979
 	jyd, jym := Divmod(jy, 33)
@@ -109,9 +111,11 @@ func ToJd(date lib.Date) int {
 	if alg2820 {
 		// using 2820-years algorithm
 		epbase := date.Year - 474
+		/* if we want to remove Year Zero:
 		if date.Year < 0 {
-			epbase--
+			epbase += 1
 		}
+		*/
 		epbase_d, epbase_m := Divmod(epbase, 2820)
 		epyear := 474 + epbase_m
 		mm := int(date.Month - 1)
@@ -154,9 +158,11 @@ func JdTo(jd int) lib.Date {
 			ycycle = Div(2134*aux1+2816*aux2+2815, 1028522) + cyear/366 + 1
 		}
 		year := 2820*cycle + ycycle + 474
+		/* if we want to remove Year Zero:
 		if year <= 0 {
 			year--
 		}
+		*/
 		yday := jd - ToJd(lib.Date{year, 1, 1}) + 1
 		month, day := getMonthDayFromYdays(yday)
 		return lib.Date{year, month, day}
