@@ -1,6 +1,7 @@
 package jalali
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/ilius/is"
@@ -177,7 +178,16 @@ func TestIsLeap(t *testing.T) {
 	}
 	for algIndex, alg2820 := range []bool{false, true} {
 		SetAlgorithm2820(alg2820)
-		for year, isLeapStr := range testMap {
+		testList := make([][]interface{}, 0, len(testMap))
+		for key, value := range testMap {
+			testList = append(testList, []interface{}{key, value})
+		}
+		sort.Slice(testList, func(i, j int) bool {
+			return testList[i][0].(int) < testList[j][0].(int)
+		})
+		for _, item := range testList {
+			year := item[0].(int)
+			isLeapStr := item[1].(string)
 			isLeap := isLeapStr[algIndex] == 'L'
 			is.AddMsg(
 				"mismatch isLeap, year=%v, alg2820=%v",
