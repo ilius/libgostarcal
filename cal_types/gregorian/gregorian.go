@@ -72,7 +72,7 @@ func init() {
 }
 
 func IsLeap(year int) bool {
-	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
+	return year%4 == 0 && (year%100 != 0 || year%400 == 0) // safe %
 }
 
 func ToJd(date lib.Date) int {
