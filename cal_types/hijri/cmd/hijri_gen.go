@@ -14,7 +14,7 @@ func main() {
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
 		fmt.Printf(
-			"        %v: %v,\n",
+			"\t\t%v: %v,\n",
 			year,
 			IsLeap(year),
 		)
@@ -29,7 +29,7 @@ func PrintToJd(startYear int, endYear int) {
 			date = lib.Date{year, month, 1}
 			jd = ToJd(date)
 			fmt.Printf(
-				"        %v: %v,\n",
+				"\t\t%v: %v,\n",
 				date.Repr(),
 				jd,
 			)

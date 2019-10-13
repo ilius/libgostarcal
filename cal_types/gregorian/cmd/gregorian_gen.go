@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	// PrintIsLeap(1990, 2030)
-	PrintToJd(-50, 51, 1)
+	PrintIsLeap(-50, 51)
+	// PrintToJd(-50, 51, 1)
 }
 
 func PrintIsLeap(startYear int, endYear int) {
@@ -19,7 +19,7 @@ func PrintIsLeap(startYear int, endYear int) {
 			isLeapStr = "L"
 		}
 		fmt.Printf(
-			"        %v: \"%v\",\n",
+			"\t\t%v: \"%v\",\n",
 			year,
 			isLeapStr,
 		)
@@ -34,7 +34,7 @@ func PrintToJd(startYear int, endYear int, maxMonth uint8) {
 			date = lib.Date{year, month, 1}
 			jd = ToJd(date)
 			fmt.Printf(
-				"        %v: %v,\n",
+				"\t\t%v: %v,\n",
 				date.Repr(),
 				jd,
 			)
