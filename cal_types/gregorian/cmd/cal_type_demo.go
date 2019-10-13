@@ -1,15 +1,26 @@
-package gregorian
+package main
 
 import "fmt"
 
-import lib "github.com/ilius/libgostarcal"
+import (
+	lib "github.com/ilius/libgostarcal"
+	. "github.com/ilius/libgostarcal/cal_types/gregorian"
+)
+
+func main() {
+	PrintIsLeap(1990, 2030)
+}
 
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
+		isLeapStr := " "
+		if IsLeap(year) {
+			isLeapStr = "L"
+		}
 		fmt.Printf(
-			"        %v: %v,\n",
+			"        %v: \"%v\",\n",
 			year,
-			IsLeap(year),
+			isLeapStr,
 		)
 	}
 }
