@@ -1,8 +1,15 @@
-package ethiopian
+package main
 
 import "fmt"
 
-import lib "github.com/ilius/libgostarcal"
+import (
+	lib "github.com/ilius/libgostarcal"
+	. "github.com/ilius/libgostarcal/cal_types/indian_national"
+)
+
+func main() {
+	PrintIsLeap(1920, 1950)
+}
 
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {

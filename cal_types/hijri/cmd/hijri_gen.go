@@ -1,8 +1,15 @@
-package hijri
+package main
 
 import "fmt"
 
-import lib "github.com/ilius/libgostarcal"
+import (
+	lib "github.com/ilius/libgostarcal"
+	. "github.com/ilius/libgostarcal/cal_types/hijri"
+)
+
+func main() {
+	PrintIsLeap(1410, 1450)
+}
 
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
