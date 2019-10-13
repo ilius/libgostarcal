@@ -1,15 +1,27 @@
-package jalali
+package main
 
 import "fmt"
 
-import lib "github.com/ilius/libgostarcal"
+import (
+	lib "github.com/ilius/libgostarcal"
+	. "github.com/ilius/libgostarcal/cal_types/jalali"
+)
+
+func main() {
+	PrintIsLeap(-100, 11)
+	PrintIsLeap(1360, 1409)
+}
 
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
+		isLeapStr := " "
+		if IsLeap(year) {
+			isLeapStr = "L"
+		}
 		fmt.Printf(
-			"        %v: %v,\n",
+			"        %v: \"%v\",\n",
 			year,
-			IsLeap(year),
+			isLeapStr,
 		)
 	}
 }
