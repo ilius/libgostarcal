@@ -91,7 +91,7 @@ func JdTo(jd int) lib.Date {
 	t := time.Unix(
 		int64(86400*(jd-J1970)),
 		0,
-	)
+	).UTC()
 	return lib.Date{
 		t.Year(),
 		uint8(t.Month()),
