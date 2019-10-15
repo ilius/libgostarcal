@@ -10,7 +10,7 @@ const R_cycleLen = "cycleLen"
 
 func init() {
 	checker := func(value interface{}) bool {
-		v, ok := value.(lib.DHMS)
+		v, ok := value.(*lib.DHMS)
 		if !ok {
 			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",

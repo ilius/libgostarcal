@@ -10,7 +10,7 @@ const R_dayTimeRange = "dayTimeRange"
 
 func init() {
 	checker := func(value interface{}) bool {
-		v, ok := value.(lib.HMSRange)
+		v, ok := value.(*lib.HMSRange)
 		if !ok {
 			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",

@@ -102,6 +102,6 @@ func ParseDateHMS(str string) (*DateHMS, error) {
 	}
 	return &DateHMS{
 		Date: date,
-		HMS:  &hms,
+		HMS:  hms,
 	}, nil
 }
