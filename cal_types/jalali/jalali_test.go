@@ -10,7 +10,7 @@ import (
 )
 
 func lastMonthLenByConvert(year int) int {
-	return ToJd(lib.Date{year + 1, 1, 1}) - ToJd(lib.Date{year, 12, 1})
+	return ToJd(lib.NewDate(year + 1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1))
 }
 
 func TestIsLeap(t *testing.T) {
@@ -217,7 +217,7 @@ func TestIsLeap(t *testing.T) {
 func TestToJd(t *testing.T) {
 	defer SetAlgorithm2820(alg2820)
 	is := is.New(t).Lax().MsgSep(", ")
-	testMap := map[lib.Date][2]int{
+	testMap := map[*lib.Date][2]int{
 		{0, 1, 1}:   {1947955, 1947955},
 		{100, 1, 1}: {1984479, 1984480}, // mismatch
 		{200, 1, 1}: {2021004, 2021004},
@@ -287,7 +287,7 @@ func TestConvert(t *testing.T) {
 			for month := uint8(1); month <= 12; month++ {
 				monthLen := GetMonthLen(year, month)
 				for day := uint8(1); day <= monthLen; day++ {
-					date := lib.Date{year, month, day}
+					date := lib.NewDate(year, month, day)
 					jd := ToJd(date)
 					ndate := JdTo(jd)
 					is.AddMsg(

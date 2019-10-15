@@ -73,7 +73,7 @@ func IsLeap(year int) bool {
 	return gregorian.IsLeap(year + 78)
 }
 
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	// The calendar is closely synchronized to the Gregorian Calendar, always starting on the same day
 	// We can use this and the regular sequence of days in months to do a simple conversion by finding
 	// the Julian Day number of the first day of the year and adding on the required number of months
@@ -86,10 +86,10 @@ func ToJd(date lib.Date) int {
 	var jdFirstDayOfYear int
 	var daysInMonth1 int
 	if IsLeap(date.Year) {
-		jdFirstDayOfYear = gregorian.ToJd(lib.Date{date.Year + 78, 3, 21})
+		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year + 78, 3, 21))
 		daysInMonth1 = 31
 	} else {
-		jdFirstDayOfYear = gregorian.ToJd(lib.Date{date.Year + 78, 3, 22})
+		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year + 78, 3, 22))
 		daysInMonth1 = 30
 	}
 
@@ -111,7 +111,7 @@ func ToJd(date lib.Date) int {
 	return jd
 }
 
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	var year, month, day int
 
 	// The calendar is closely synchronized to the Gregorian Calendar, always starting on the same day
@@ -120,7 +120,7 @@ func JdTo(jd int) lib.Date {
 	// Indian year and subtracting off the required number of months and days to get the final date
 
 	gDate := gregorian.JdTo(jd)
-	jdGregorianFirstDayOfYear := gregorian.ToJd(lib.Date{gDate.Year, 1, 1})
+	jdGregorianFirstDayOfYear := gregorian.ToJd(lib.NewDate(gDate.Year, 1, 1))
 	gregorianDayOfYear := jd - jdGregorianFirstDayOfYear + 1
 
 	// There is a fixed 78 year difference between year numbers, but the years do not exactly match up,
@@ -160,7 +160,7 @@ func JdTo(jd int) lib.Date {
 		month = (indianDayOfYear-daysInMonth1-5*31-1)/30 + 7
 		day = indianDayOfYear - daysInMonth1 - 5*31 - (month-7)*30
 	}
-	return lib.Date{year, uint8(month), uint8(day)}
+	return lib.NewDate(year, uint8(month), uint8(day))
 }
 
 func GetMonthLen(year int, month uint8) uint8 {

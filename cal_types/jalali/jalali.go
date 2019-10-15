@@ -107,7 +107,7 @@ func IsLeap(year int) bool {
 }
 
 // ToJd: calculate Julian day from Jalali date
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	if alg2820 {
 		// using 2820-years algorithm
 		epbase := date.Year - 474
@@ -144,10 +144,10 @@ func getMonthDayFromYdays(yday int) (uint8, uint8) {
 }
 
 // JdTo: calculate Jalali date from Julian day
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	if alg2820 {
 		// using 2820-years algorithm
-		deltaDays := jd - ToJd(lib.Date{475, 1, 1})
+		deltaDays := jd - ToJd(lib.NewDate(475, 1, 1))
 		cycle, cyear := Divmod(deltaDays, 1029983)
 		var ycycle int
 		if cyear == 1029982 {
@@ -163,9 +163,9 @@ func JdTo(jd int) lib.Date {
 			year--
 		}
 		*/
-		yday := jd - ToJd(lib.Date{year, 1, 1}) + 1
+		yday := jd - ToJd(lib.NewDate(year, 1, 1)) + 1
 		month, day := getMonthDayFromYdays(yday)
-		return lib.Date{year, month, day}
+		return lib.NewDate(year, month, day)
 	}
 	jdays := int(jd - GREGORIAN_EPOCH - 584101)
 	// -(1600*365 + 1600//4 - 1600//100 + 1600//400) + 365-79+1 == -584101
@@ -181,7 +181,7 @@ func JdTo(jd int) lib.Date {
 	}
 	yday := jdays + 1
 	month, day := getMonthDayFromYdays(yday)
-	return lib.Date{year, month, day}
+	return lib.NewDate(year, month, day)
 }
 
 func GetMonthLen(year int, month uint8) uint8 {

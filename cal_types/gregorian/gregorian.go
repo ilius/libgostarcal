@@ -75,7 +75,7 @@ func IsLeap(year int) bool {
 	return year%4 == 0 && (year%100 != 0 || year%400 == 0) // safe %
 }
 
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	t := time.Date(
 		date.Year,
 		time.Month(date.Month),
@@ -87,22 +87,22 @@ func ToJd(date lib.Date) int {
 	return J1970 + int(t.Unix()/86400)
 }
 
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	t := time.Unix(
 		int64(86400*(jd-J1970)),
 		0,
 	).UTC()
-	return lib.Date{
+	return lib.NewDate(
 		t.Year(),
 		uint8(t.Month()),
 		uint8(t.Day()),
-	}
+	)
 }
 
 func GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
-		return uint8(ToJd(lib.Date{year + 1, 1, 1}) - ToJd(lib.Date{year, 12, 1}))
+		return uint8(ToJd(lib.NewDate(year + 1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1)))
 	} else {
-		return uint8(ToJd(lib.Date{year, month + 1, 1}) - ToJd(lib.Date{year, month, 1}))
+		return uint8(ToJd(lib.NewDate(year, month + 1, 1)) - ToJd(lib.NewDate(year, month, 1)))
 	}
 }

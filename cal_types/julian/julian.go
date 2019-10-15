@@ -114,7 +114,7 @@ func getMonthDayFromYdays(yDays int, leap bool) (uint8, uint8) {
 	return month, day
 }
 
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	quadCount, yMode := Divmod(date.Year, 4)
 	return (Epoch +
 		1461*quadCount +
@@ -123,12 +123,12 @@ func ToJd(date lib.Date) int {
 		int(date.Day))
 }
 
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	quadCount, quadDays := Divmod(jd-Epoch, 1461)
 
 	if quadDays == 0 {
 		// first day of quad (and year)
-		return lib.Date{4 * quadCount, 1, 1}
+		return lib.NewDate(4 * quadCount, 1, 1)
 	}
 
 	yMode, yDays := Divmod(quadDays-1, 365)
@@ -136,7 +136,7 @@ func JdTo(jd int) lib.Date {
 	year := 4*quadCount + yMode
 	month, day := getMonthDayFromYdays(yDays, yMode == 0)
 
-	return lib.Date{year, month, day}
+	return lib.NewDate(year, month, day)
 }
 
 func GetMonthLen(year int, month uint8) uint8 {

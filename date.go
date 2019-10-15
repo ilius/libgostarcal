@@ -7,54 +7,62 @@ import (
 	"strings"
 )
 
+func NewDate(year int, month uint8, day uint8) *Date {
+	return &Date{
+		Year: year,
+		Month: month,
+		Day: day,
+	}
+}
+
 type Date struct {
 	Year  int
 	Month uint8
 	Day   uint8
 }
 
-func (date Date) String() string {
+func (date *Date) String() string {
 	return fmt.Sprintf("%.4d/%.2d/%.2d", date.Year, date.Month, date.Day)
 }
 
-func (date Date) Repr() string {
-	return fmt.Sprintf("lib.Date{%d, %d, %d}", date.Year, date.Month, date.Day)
+func (date *Date) Repr() string {
+	return fmt.Sprintf("nil(%d, %d, %d)", date.Year, date.Month, date.Day)
 }
 
-func (date Date) IsValid() bool {
+func (date *Date) IsValid() bool {
 	return date.Month > 0 && date.Month < 13 && date.Day > 0 && date.Day < 40
 }
 
-func ParseDate(str string) (Date, error) {
+func ParseDate(str string) (*Date, error) {
 	parts := strings.Split(str, "/")
 	if len(parts) != 3 {
-		return Date{},
+		return nil,
 			errors.New("invalid Date string '" + str + "'")
 	}
 	var err error
 	var y, m, d int64
 	y, err = strconv.ParseInt(parts[0], 10, 0)
 	if err != nil {
-		return Date{}, err
+		return nil, err
 	}
 	m, err = strconv.ParseInt(parts[1], 10, 0)
 	if err != nil {
-		return Date{}, err
+		return nil, err
 	}
 	d, err = strconv.ParseInt(parts[2], 10, 0)
 	if err != nil {
-		return Date{}, err
+		return nil, err
 	}
-	return Date{int(y), uint8(m), uint8(d)}, nil
+	return NewDate(int(y), uint8(m), uint8(d)), nil
 }
 
-func ParseDateList(str string) ([]Date, error) {
+func ParseDateList(str string) ([]*Date, error) {
 	parts := strings.Split(str, " ")
-	dates := make([]Date, len(parts))
+	dates := make([]*Date, len(parts))
 	for index, part := range parts {
 		date, err := ParseDate(part)
 		if err != nil {
-			return []Date{}, err
+			return nil, err
 		}
 		dates[index] = date
 	}
@@ -62,8 +70,8 @@ func ParseDateList(str string) ([]Date, error) {
 }
 
 type DateHMS struct {
-	Date
-	HMS
+	*Date
+	*HMS
 }
 
 func (dt DateHMS) String() string {
@@ -78,22 +86,22 @@ func (dt DateHMS) IsValid() bool {
 	return dt.Date.IsValid() && dt.HMS.IsValid()
 }
 
-func ParseDateHMS(str string) (DateHMS, error) {
+func ParseDateHMS(str string) (*DateHMS, error) {
 	parts := strings.Split(str, " ")
 	if len(parts) != 2 {
-		return DateHMS{},
+		return nil,
 			errors.New("invalid DateHMS string '" + str + "'")
 	}
 	date, err := ParseDate(parts[0])
 	if err != nil {
-		return DateHMS{}, err
+		return nil, err
 	}
 	hms, err := ParseHMS(parts[1])
 	if err != nil {
-		return DateHMS{}, err
+		return nil, err
 	}
-	return DateHMS{
+	return &DateHMS{
 		Date: date,
-		HMS:  hms,
+		HMS:  &hms,
 	}, nil
 }

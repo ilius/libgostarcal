@@ -10,7 +10,7 @@ const R_start = "start"
 
 func init() {
 	checker := func(value interface{}) bool {
-		v, ok := value.(lib.DateHMS)
+		v, ok := value.(*lib.DateHMS)
 		if !ok {
 			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",

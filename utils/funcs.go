@@ -126,7 +126,7 @@ func GetUtcOffsetCurrent(loc *time.Location) int {
 }
 
 // tested
-func GetEpochByGDate(gdate lib.Date, loc *time.Location) int64 {
+func GetEpochByGDate(gdate *lib.Date, loc *time.Location) int64 {
 	t := time.Date(
 		gdate.Year,
 		time.Month(int(gdate.Month)), // gdate.Month is uint8
@@ -191,15 +191,16 @@ func GetHmsBySeconds(second uint) lib.HMS {
 func GetJhmsByEpoch(epoch int64, loc *time.Location) (int, lib.HMS) {
 	// return (jd, hour, minute, second)
 	t := time.Unix(epoch, 0).In(loc) // .In useful? FIXME
-	return gregorian.ToJd(lib.Date{
-			t.Year(),
-			uint8(t.Month()),
-			uint8(t.Day()),
-		}), lib.HMS{
-			uint8(t.Hour()),
-			uint8(t.Minute()),
-			uint8(t.Second()),
-		}
+	jd := gregorian.ToJd(lib.NewDate(
+		t.Year(),
+		uint8(t.Month()),
+		uint8(t.Day()),
+	))
+	return jd, lib.HMS{
+		uint8(t.Hour()),
+		uint8(t.Minute()),
+		uint8(t.Second()),
+	}
 }
 
 func GetEpochByJhms(jd int, hms lib.HMS, loc *time.Location) int64 {
@@ -223,14 +224,14 @@ func GetJdAndSecondsFromEpoch(epoch int64, loc *time.Location) (int, int) {
 	return jd, hms.GetTotalSeconds()
 }
 
-func GetCurrentDate(calTypeName string) (lib.Date, error) {
+func GetCurrentDate(calTypeName string) (*lib.Date, error) {
 	t := time.Now() // .In(loc)
 	if calTypeName == "gregorian" {
-		return lib.Date{t.Year(), uint8(t.Month()), uint8(t.Day())}, nil
+		return lib.NewDate(t.Year(), uint8(t.Month()), uint8(t.Day())), nil
 	}
 	calType, ok := cal_types.CalTypesMap[calTypeName]
 	if !ok {
-		return lib.Date{},
+		return nil,
 			errors.New("invalid calendar type '" + calTypeName + "'")
 	}
 	loc := t.Location() // FIXME

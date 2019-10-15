@@ -78,7 +78,7 @@ func IsLeap(year int) bool {
 	return (year*11+14)%30 < 11
 }
 
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	return (int(date.Day) +
 		int(math.Ceil(29.5*float64(date.Month-1))) +
 		(date.Year-1)*354 +
@@ -86,17 +86,17 @@ func ToJd(date lib.Date) int {
 		Epoch)
 }
 
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	// jdf := jd + 0.5
 	year := (30*(jd-1-Epoch) + 10646) / 10631
 	month := uint8(utils.IntMin(
 		12,
 		int(math.Ceil(
-			(float64(jd)+0.5-float64(ToJd(lib.Date{year, 1, 1})))/29.5,
+			(float64(jd)+0.5-float64(ToJd(lib.NewDate(year, 1, 1))))/29.5,
 		)),
 	))
-	day := uint8(jd - ToJd(lib.Date{year, month, 1}) + 1)
-	return lib.Date{year, month, day}
+	day := uint8(jd - ToJd(lib.NewDate(year, month, 1)) + 1)
+	return lib.NewDate(year, month, day)
 }
 
 func GetMonthLen(year int, month uint8) uint8 {

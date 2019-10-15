@@ -59,7 +59,7 @@ func TestIsLeap(t *testing.T) {
 
 func TestToJd(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
-	testMap := map[lib.Date]int{
+	testMap := map[*lib.Date]int{
 		{2015, 1, 1}:  2459834,
 		{2015, 2, 1}:  2459864,
 		{2015, 3, 1}:  2459894,
@@ -110,7 +110,7 @@ func TestConvert(t *testing.T) {
 		for month := uint8(1); month <= 12; month++ {
 			monthLen := GetMonthLen(year, month)
 			for day := uint8(1); day <= monthLen; day++ {
-				date := lib.Date{year, month, day}
+				date := lib.NewDate(year, month, day)
 				jd := ToJd(date)
 				ndate := JdTo(jd)
 				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)

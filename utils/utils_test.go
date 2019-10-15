@@ -21,8 +21,8 @@ func TestTimeZone(t *testing.T) {
 	// date := CalTypesMap["gregorian"].JdTo(jd)
 	date, _ := GetCurrentDate("gregorian")
 	t.Log("Date:", date)
-	startJd := gregorian.ToJd(lib.Date{2016, 1, 1})
-	endJd := gregorian.ToJd(lib.Date{2020, 1, 1})
+	startJd := gregorian.ToJd(lib.NewDate(2016, 1, 1))
+	endJd := gregorian.ToJd(lib.NewDate(2020, 1, 1))
 	for jd := startJd; jd < endJd; jd++ {
 		epoch1 := GetEpochByJd(jd, loc)
 		gdate := gregorian.JdTo(jd)
@@ -65,8 +65,8 @@ func TestGetJdListFromEpochRange(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	startDate := lib.Date{2015, 03, 12}
-	endDate := lib.Date{2016, 07, 02}
+	startDate := lib.NewDate(2015, 03, 12)
+	endDate := lib.NewDate(2016, 07, 02)
 	startEpoch := GetEpochByGDate(startDate, loc) + randSec1
 	endEpoch := GetEpochByGDate(endDate, loc) + randSec2
 	startJd, endJd := GetJdRangeFromEpochRange(startEpoch, endEpoch, loc)

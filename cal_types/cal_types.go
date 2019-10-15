@@ -35,8 +35,8 @@ type CalType interface {
 	MonthNames() []string
 	MonthNamesAb() []string
 	IsLeap(year int) bool
-	ToJd(date lib.Date) int
-	JdTo(jd int) lib.Date
+	ToJd(date *lib.Date) int
+	JdTo(jd int) *lib.Date
 	GetMonthLen(year int, month uint8) uint8
 }
 
@@ -50,8 +50,8 @@ type calTypeStruct struct {
 	monthNames   []string
 	monthNamesAb []string
 	isLeap       func(year int) bool
-	toJd         func(date lib.Date) int
-	jdTo         func(jd int) lib.Date
+	toJd         func(date *lib.Date) int
+	jdTo         func(jd int) *lib.Date
 	getMonthLen  func(year int, month uint8) uint8
 }
 
@@ -91,11 +91,11 @@ func (ct *calTypeStruct) IsLeap(year int) bool {
 	return ct.isLeap(year)
 }
 
-func (ct *calTypeStruct) ToJd(date lib.Date) int {
+func (ct *calTypeStruct) ToJd(date *lib.Date) int {
 	return ct.toJd(date)
 }
 
-func (ct *calTypeStruct) JdTo(jd int) lib.Date {
+func (ct *calTypeStruct) JdTo(jd int) *lib.Date {
 	return ct.jdTo(jd)
 }
 
@@ -116,8 +116,8 @@ func RegisterCalType(
 	monthNames []string,
 	monthNamesAb []string,
 	isLeap func(year int) bool,
-	toJd func(date lib.Date) int,
-	jdTo func(jd int) lib.Date,
+	toJd func(date *lib.Date) int,
+	jdTo func(jd int) *lib.Date,
 	getMonthLen func(year int, month uint8) uint8,
 ) {
 	calType := &calTypeStruct{
@@ -150,19 +150,19 @@ func GetCalType(calTypeName string) (CalType, error) {
 	return calType, nil
 }
 
-func Convert(date lib.Date, fromTypeName string, toTypeName string) (lib.Date, error) {
+func Convert(date *lib.Date, fromTypeName string, toTypeName string) (*lib.Date, error) {
 	fromType, fromOk := CalTypesMap[fromTypeName]
 	toType, toOk := CalTypesMap[toTypeName]
 	if !fromOk {
-		return lib.Date{}, invalidCalType(fromTypeName)
+		return nil, invalidCalType(fromTypeName)
 	}
 	if !toOk {
-		return lib.Date{}, invalidCalType(toTypeName)
+		return nil, invalidCalType(toTypeName)
 	}
 	return toType.JdTo(fromType.ToJd(date)), nil
 }
 
-func ToJd(date lib.Date, calTypeName string) (int, error) {
+func ToJd(date *lib.Date, calTypeName string) (int, error) {
 	calType, calTypeOk := CalTypesMap[calTypeName]
 	if !calTypeOk {
 		return 0, invalidCalType(calTypeName)
@@ -170,10 +170,10 @@ func ToJd(date lib.Date, calTypeName string) (int, error) {
 	return calType.ToJd(date), nil
 }
 
-func JdTo(jd int, calTypeName string) (lib.Date, error) {
+func JdTo(jd int, calTypeName string) (*lib.Date, error) {
 	calType, calTypeOk := CalTypesMap[calTypeName]
 	if !calTypeOk {
-		return lib.Date{}, invalidCalType(calTypeName)
+		return nil, invalidCalType(calTypeName)
 	}
 	return calType.JdTo(jd), nil
 }

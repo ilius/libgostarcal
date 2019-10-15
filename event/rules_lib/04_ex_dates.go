@@ -10,7 +10,7 @@ const R_ex_dates = "ex_dates"
 
 func init() {
 	checker := func(value interface{}) bool {
-		list, ok := value.([]lib.Date)
+		list, ok := value.([]*lib.Date)
 		if !ok {
 			panic(fmt.Errorf(
 				"%s rule value checker: type conversion failed, value=%v with type %T\n",

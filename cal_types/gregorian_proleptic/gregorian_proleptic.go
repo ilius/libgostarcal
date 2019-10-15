@@ -95,7 +95,7 @@ func IsLeap(year int) bool {
 	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
 }
 
-func ToJd(date lib.Date) int {
+func ToJd(date *lib.Date) int {
 	/*
 	   Formula from The Calendar FAQ by Claus Tondering
 	   http://www.tondering.dk/claus/cal/node3.html#SECTION003161000000000000000
@@ -123,7 +123,7 @@ func ToJd(date lib.Date) int {
 		(153*m+2)/5 + int(date.Day))
 }
 
-func JdTo(jd int) lib.Date {
+func JdTo(jd int) *lib.Date {
 	/*
 	   Formula from The Calendar FAQ by Claus Tondering
 	   http://www.tondering.dk/claus/cal/node3.html#SECTION003161000000000000000
@@ -145,7 +145,7 @@ func JdTo(jd int) lib.Date {
 	if year < 1 {
 		year -= 1
 	}
-	return lib.Date{year, month, day}
+	return lib.NewDate(year, month, day)
 }
 
 func GetMonthLen(year int, month uint8) uint8 {
