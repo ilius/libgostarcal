@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"testing"
 	"github.com/ilius/is"
+	"testing"
 )
 
 func TestDivmod(t *testing.T) {
@@ -31,4 +31,3 @@ func TestDivmod(t *testing.T) {
 		is.AddMsg("Divmod: mismatch mod, a=%v, b=%v", a, b).Equal(mod, modExpect)
 	}
 }
-
