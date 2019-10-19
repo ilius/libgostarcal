@@ -102,7 +102,6 @@ func JdTo(jd int) *lib.Date {
 func GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
 		return uint8(ToJd(lib.NewDate(year+1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1)))
-	} else {
-		return uint8(ToJd(lib.NewDate(year, month+1, 1)) - ToJd(lib.NewDate(year, month, 1)))
 	}
+	return uint8(ToJd(lib.NewDate(year, month+1, 1)) - ToJd(lib.NewDate(year, month, 1)))
 }

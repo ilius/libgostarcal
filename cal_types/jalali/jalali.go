@@ -24,10 +24,11 @@
 package jalali
 
 import (
+	"log"
+
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
-	"log"
 )
 
 // ###### Common Globals #######
@@ -188,10 +189,8 @@ func GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
 		if IsLeap(year) {
 			return 30
-		} else {
-			return 29
 		}
-	} else {
-		return monthLen[month-1]
+		return 29
 	}
+	return monthLen[month-1]
 }

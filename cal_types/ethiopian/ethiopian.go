@@ -124,10 +124,8 @@ func GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
 		if IsLeap(year) {
 			return 36
-		} else {
-			return 35
 		}
-	} else {
-		return monthLens[month-1]
+		return 35
 	}
+	return monthLens[month-1]
 }

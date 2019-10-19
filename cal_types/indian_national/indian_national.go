@@ -167,9 +167,8 @@ func GetMonthLen(year int, month uint8) uint8 {
 	if month == 1 {
 		if IsLeap(year) {
 			return 31
-		} else {
-			return 30
 		}
+		return 30
 	}
 	if 2 <= month && month <= 6 {
 		return 31
