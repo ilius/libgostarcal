@@ -10,6 +10,7 @@ import (
 func main() {
 	PrintIsLeap(-50, 51)
 	// PrintToJd(-50, 51, 1)
+	// PrintGetMonthLen(2015, 2018, 12)
 }
 
 func PrintIsLeap(startYear int, endYear int) {
@@ -37,6 +38,18 @@ func PrintToJd(startYear int, endYear int, maxMonth uint8) {
 				"\t\tlib.%v: %v,\n",
 				date.Repr(),
 				jd,
+			)
+		}
+	}
+}
+
+func PrintGetMonthLen(startYear int, endYear int, maxMonth uint8) {
+	for year := startYear; year < endYear; year++ {
+		for month := uint8(1); month <= maxMonth; month++ {
+			fmt.Printf(
+				"\t\t{%v, %v}: %v,\n",
+				year, month,
+				GetMonthLen(year, month),
 			)
 		}
 	}
