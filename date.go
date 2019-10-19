@@ -9,9 +9,9 @@ import (
 
 func NewDate(year int, month uint8, day uint8) *Date {
 	return &Date{
-		Year: year,
+		Year:  year,
 		Month: month,
-		Day: day,
+		Day:   day,
 	}
 }
 
@@ -26,7 +26,7 @@ func (date *Date) String() string {
 }
 
 func (date *Date) Repr() string {
-	return fmt.Sprintf("nil(%d, %d, %d)", date.Year, date.Month, date.Day)
+	return fmt.Sprintf("NewDate(%d, %d, %d)", date.Year, date.Month, date.Day)
 }
 
 func (date *Date) IsValid() bool {
