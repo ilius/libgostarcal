@@ -86,10 +86,10 @@ func ToJd(date *lib.Date) int {
 	var jdFirstDayOfYear int
 	var daysInMonth1 int
 	if IsLeap(date.Year) {
-		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year + 78, 3, 21))
+		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year+78, 3, 21))
 		daysInMonth1 = 31
 	} else {
-		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year + 78, 3, 22))
+		jdFirstDayOfYear = gregorian.ToJd(lib.NewDate(date.Year+78, 3, 22))
 		daysInMonth1 = 30
 	}
 

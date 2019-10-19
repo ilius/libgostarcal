@@ -128,7 +128,7 @@ func JdTo(jd int) *lib.Date {
 
 	if quadDays == 0 {
 		// first day of quad (and year)
-		return lib.NewDate(4 * quadCount, 1, 1)
+		return lib.NewDate(4*quadCount, 1, 1)
 	}
 
 	yMode, yDays := Divmod(quadDays-1, 365)
