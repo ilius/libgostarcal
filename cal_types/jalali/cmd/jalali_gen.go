@@ -10,6 +10,7 @@ import (
 func main() {
 	PrintIsLeap(-100, 11)
 	PrintIsLeap(1360, 1409)
+	// PrintToJd(1380, 1390)
 }
 
 func PrintIsLeap(startYear int, endYear int) {
@@ -34,7 +35,7 @@ func PrintToJd(startYear int, endYear int) {
 			date = lib.NewDate(year, month, 1)
 			jd = ToJd(date)
 			fmt.Printf(
-				"\t\t%v: %v,\n",
+				"\t\tlib.%v: %v,\n",
 				date.Repr(),
 				jd,
 			)

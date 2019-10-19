@@ -34,7 +34,7 @@ func PrintToJd(startYear int, endYear int, maxMonth uint8) {
 			date = lib.NewDate(year, month, 1)
 			jd = ToJd(date)
 			fmt.Printf(
-				"\t\t%v: %v,\n",
+				"\t\tlib.%v: %v,\n",
 				date.Repr(),
 				jd,
 			)
