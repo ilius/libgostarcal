@@ -182,9 +182,9 @@ func GetJdRangeFromEpochRange(startEpoch int64, endEpoch int64, loc *time.Locati
 
 func GetHmsBySeconds(second uint) lib.HMS {
 	return lib.HMS{
-		uint8(second / 3600),
-		uint8(second / 60),
-		uint8(second % 60), // safe %
+		Hour:   uint8(second / 3600),
+		Minute: uint8(second / 60),
+		Second: uint8(second % 60), // safe %
 	}
 }
 
@@ -197,9 +197,9 @@ func GetJhmsByEpoch(epoch int64, loc *time.Location) (int, lib.HMS) {
 		uint8(t.Day()),
 	))
 	return jd, lib.HMS{
-		uint8(t.Hour()),
-		uint8(t.Minute()),
-		uint8(t.Second()),
+		Hour:   uint8(t.Hour()),
+		Minute: uint8(t.Minute()),
+		Second: uint8(t.Second()),
 	}
 }
 
