@@ -23,7 +23,7 @@ import (
 	lib "github.com/ilius/libgostarcal"
 
 	"github.com/ilius/libgostarcal/cal_types"
-	"github.com/ilius/libgostarcal/utils"
+	. "github.com/ilius/libgostarcal/utils"
 )
 
 // ###### Common Globals #######
@@ -93,14 +93,13 @@ func ToJd(date *lib.Date) int {
 }
 
 func JdTo(jd int) *lib.Date {
-	quad := (jd - Epoch) / 1461
-	dquad := (jd - Epoch) % 1461
-	yindex := utils.IntMin(3, dquad/365)
+	quad, dquad := Divmod(jd-Epoch, 1461)
+	yindex := IntMin(3, dquad/365) // safe /
 	year := quad*4 + yindex + 1
 
 	yearday := jd - ToJd(lib.NewDate(year, 1, 1))
-	month := yearday/30 + 1
-	day := yearday%30 + 1
+	month := yearday/30 + 1 // safe /
+	day := yearday%30 + 1   // safe %
 
 	if month == 13 {
 		month -= 1

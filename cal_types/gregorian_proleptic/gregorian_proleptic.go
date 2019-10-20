@@ -23,6 +23,7 @@ package gregorian_proleptic
 import (
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/cal_types"
+	. "github.com/ilius/libgostarcal/utils"
 )
 
 // ###### Common Globals #######
@@ -92,7 +93,7 @@ func IsLeap(year int) bool {
 	if year < 1 {
 		year += 1
 	}
-	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
+	return year%4 == 0 && (year%100 != 0 || year%400 == 0) // safe
 }
 
 func ToJd(date *lib.Date) int {
@@ -119,8 +120,8 @@ func ToJd(date *lib.Date) int {
 
 	m := int(date.Month) + 12*a - 3
 
-	return (365*y + y/4 - y/100 + y/400 - 32045 +
-		(153*m+2)/5 + int(date.Day))
+	return (365*y + Div(y, 4) - Div(y, 100) + Div(y, 400) - 32045 +
+		Div(153*m+2, 5) + int(date.Day))
 }
 
 func JdTo(jd int) *lib.Date {
@@ -131,15 +132,15 @@ func JdTo(jd int) *lib.Date {
 	   the Boost licensed source code
 	*/
 	a := jd + 32044
-	b := (4*a + 3) / 146097
-	c := a - 146097*b/4
-	d := (4*c + 3) / 1461
-	e := c - 1461*d/4
-	m := (5*e + 2) / 153
-	day := uint8(e - (153*m+2)/5 + 1)
-	month := uint8(m + 3 - 12*(m/10))
-	year := 100*b + d - 4800 + (m / 10)
-	// If year is -ve then is BC. In Gregorian there is no year 0,
+	b := Div(4*a+3, 146097)
+	c := a - Div(146097*b, 4)
+	d := Div(4*c+3, 1461)
+	e := c - Div(1461*d, 4)
+	m := Div(5*e+2, 153)
+	day := uint8(e - Div(153*m+2, 5) + 1)
+	month := uint8(m + 3 - 12*Div(m, 10))
+	year := 100*b + d - 4800 + Div(m, 10)
+	// If year is negative then is BC. In Gregorian there is no year 0,
 	// but the maths is easier if we pretend there is,
 	// so internally year of 0 = 1BC = -1 outside
 	if year < 1 {

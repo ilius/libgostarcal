@@ -92,7 +92,7 @@ func init() {
 }
 
 func IsLeap(year int) bool {
-	return year%4 == 0
+	return year%4 == 0 // safe
 }
 
 func getYearDays(month uint8, leap bool) int {

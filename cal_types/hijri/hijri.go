@@ -23,7 +23,7 @@ import (
 	lib "github.com/ilius/libgostarcal"
 
 	"github.com/ilius/libgostarcal/cal_types"
-	"github.com/ilius/libgostarcal/utils"
+	. "github.com/ilius/libgostarcal/utils"
 )
 
 // ###### Common Globals #######
@@ -75,21 +75,21 @@ func init() {
 }
 
 func IsLeap(year int) bool {
-	return (year*11+14)%30 < 11
+	return Mod(year*11+14, 30) < 11
 }
 
 func ToJd(date *lib.Date) int {
 	return (int(date.Day) +
 		int(math.Ceil(29.5*float64(date.Month-1))) +
 		(date.Year-1)*354 +
-		(11*date.Year+3)/30 +
+		Div(11*date.Year+3, 30) +
 		Epoch)
 }
 
 func JdTo(jd int) *lib.Date {
 	// jdf := jd + 0.5
-	year := (30*(jd-1-Epoch) + 10646) / 10631
-	month := uint8(utils.IntMin(
+	year := Div(30*(jd-1-Epoch)+10646, 10631)
+	month := uint8(IntMin(
 		12,
 		int(math.Ceil(
 			(float64(jd)+0.5-float64(ToJd(lib.NewDate(year, 1, 1))))/29.5,
@@ -100,7 +100,7 @@ func JdTo(jd int) *lib.Date {
 }
 
 func GetMonthLen(year int, month uint8) uint8 {
-	if month%2 == 1 {
+	if month%2 == 1 { // safe %
 		return 30
 	}
 	if month == 12 && IsLeap(year) {
