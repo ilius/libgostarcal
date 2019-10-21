@@ -193,7 +193,8 @@ func (a IntervalPointList) Sort() {
 
 func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 	pcount := len(points)
-	list := make(IntervalList, 0, pcount/2) // we need no more than `count` spaces
+	// we need no more than `pcount` spaces
+	list := make(IntervalList, 0, pcount/2) // safe division
 	startedStack := make(Int64Stack, 0, pcount)
 	var start int64
 	for _, point := range points {
