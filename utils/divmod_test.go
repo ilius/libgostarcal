@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 	"testing"
 )
 

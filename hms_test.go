@@ -3,7 +3,7 @@ package libscal
 import (
 	"testing"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 )
 
 func TestHMS_FloatHour(t *testing.T) {

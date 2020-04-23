@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 )
 
 func ShuffleIntervals(a []Interval) {

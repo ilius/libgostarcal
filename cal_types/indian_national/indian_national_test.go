@@ -3,7 +3,7 @@ package indian_national
 import (
 	"testing"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 
 	lib "github.com/ilius/libgostarcal"
 )

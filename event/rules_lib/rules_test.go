@@ -3,7 +3,7 @@ package rules_lib
 import (
 	"testing"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 )
 
 type RuleTestCase struct {
