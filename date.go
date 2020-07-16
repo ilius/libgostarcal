@@ -21,6 +21,17 @@ type Date struct {
 	Day   uint8
 }
 
+func (date *Date) StringWithSep(sep string) string {
+	return fmt.Sprintf(
+		"%.4d%s%.2d%s%.2d",
+		date.Year,
+		sep,
+		date.Month,
+		sep,
+		date.Day,
+	)
+}
+
 func (date *Date) String() string {
 	return fmt.Sprintf("%.4d/%.2d/%.2d", date.Year, date.Month, date.Day)
 }
