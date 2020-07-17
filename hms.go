@@ -13,6 +13,10 @@ type HMS struct {
 	Second uint8
 }
 
+func (hms *HMS) Repr() string {
+	return fmt.Sprintf("NewHMS(%d, %d, %d)", hms.Hour, hms.Minute, hms.Second)
+}
+
 type DHMS struct {
 	HMS
 	Days uint
@@ -51,6 +55,14 @@ func (dhms DHMS) String() string {
 
 func (hms HMSRange) IsValid() bool {
 	return hms.Start.IsValid() && hms.End.IsValid()
+}
+
+func NewHMS(hour uint8, minute uint8, second uint8) *HMS {
+	return &HMS{
+		Hour:   hour,
+		Minute: minute,
+		Second: second,
+	}
 }
 
 func ParseHMS(str string) (*HMS, error) {
