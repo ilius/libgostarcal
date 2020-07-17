@@ -40,9 +40,7 @@ func (hms HMS) GetFloatHour() float64 {
 }
 
 func (hms HMS) IsValid() bool {
-	return hms.Hour >= 0 && hms.Hour < 24 &&
-		hms.Minute >= 0 && hms.Minute < 60 &&
-		hms.Second >= 0 && hms.Second < 60
+	return hms.Hour < 24 && hms.Minute < 60 && hms.Second < 60
 }
 
 func (dhms DHMS) IsValid() bool {
