@@ -90,7 +90,7 @@ func (dt DateHMS) String() string {
 }
 
 func (dt DateHMS) Repr() string {
-	return fmt.Sprintf("lib.DateHMS{{%s}, {%s}}", dt.Date, dt.HMS)
+	return fmt.Sprintf("DateHMS{Date: %s, HMS: %s}", dt.Date.Repr(), dt.HMS.Repr())
 }
 
 func (dt DateHMS) IsValid() bool {
