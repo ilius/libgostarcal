@@ -41,18 +41,21 @@ type CalType interface {
 }
 
 type calTypeStruct struct {
-	name         string
-	desc         string
-	epoch        int
-	minMonthLen  uint8
-	maxMonthLen  uint8
-	avgYearLen   float64
+	name string
+	desc string
+
+	isLeap      func(year int) bool
+	toJd        func(date *lib.Date) int
+	jdTo        func(jd int) *lib.Date
+	getMonthLen func(year int, month uint8) uint8
+
 	monthNames   []string
 	monthNamesAb []string
-	isLeap       func(year int) bool
-	toJd         func(date *lib.Date) int
-	jdTo         func(jd int) *lib.Date
-	getMonthLen  func(year int, month uint8) uint8
+
+	epoch       int
+	minMonthLen uint8
+	maxMonthLen uint8
+	avgYearLen  float64
 }
 
 func (ct *calTypeStruct) Name() string {

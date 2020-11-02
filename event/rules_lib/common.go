@@ -20,10 +20,10 @@ const (
 )
 
 type EventRuleType struct {
-	Order        int
-	Name         string
-	ValueDecoder func(value string) (interface{}, error)
 	ValueChecker *func(value interface{}) bool
+	ValueDecoder func(value string) (interface{}, error)
+	Name         string
+	Order        int
 }
 
 type EventRuleTypeList []*EventRuleType

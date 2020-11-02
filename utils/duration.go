@@ -24,9 +24,9 @@ var durationUnits = map[string]int{
 }
 
 type Duration struct {
-	Value       float64
 	UnitString  string
 	UnitSeconds int
+	Value       float64
 }
 
 func (dur Duration) IsValid() bool {
