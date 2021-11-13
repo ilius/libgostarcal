@@ -18,6 +18,7 @@
 package hijri
 
 import (
+	"encoding/json"
 	"math"
 
 	lib "github.com/ilius/libgostarcal"
@@ -26,7 +27,22 @@ import (
 	. "github.com/ilius/libgostarcal/utils"
 )
 
+// ########## Types ##########
+
+type MonthData struct {
+	Version   [2]int  `json:"version"`
+	StartDate [3]int  `json:"startDate"`
+	StartJd   int     `json:"startJd"`
+	MonthLen  [][]int `json:"monthLen"`
+	ExpJd     int     `json:"expJd"`
+
+	MonthLenByYm map[int]int `json:"-"`
+	EndJd        int         `json:"-"`
+}
+
 // ###### Common Globals #######
+
+var useMonthData = true
 
 const (
 	Name  = "hijri"
@@ -55,6 +71,117 @@ var MonthNamesAb = []string{
 
 // ###### Other Globals  #######
 
+const monthDataJSON = `{
+	"version": [1443, 8],
+	"startDate": [1426, 2, 1],
+	"startJd": 2453442,
+	"monthLen": [
+		[1426,  0, 29, 30, 29, 30, 30, 30, 30, 29, 30, 29, 29],
+		[1427, 30, 29, 29, 30, 29, 30, 30, 30, 30, 29, 29, 30],
+		[1428, 29, 30, 29, 29, 29, 30, 30, 29, 30, 30, 30, 29],
+		[1429, 30, 29, 30, 29, 29, 29, 30, 30, 29, 30, 30, 29],
+		[1430, 30, 30, 29, 29, 30, 29, 30, 29, 29, 30, 30, 29],
+		[1431, 30, 30, 29, 30, 29, 30, 29, 30, 29, 29, 30, 29],
+		[1432, 30, 30, 29, 30, 30, 30, 29, 29, 30, 29, 30, 29],
+		[1433, 29, 30, 29, 30, 30, 30, 29, 30, 29, 30, 29, 30],
+		[1434, 29, 29, 30, 29, 30, 30, 29, 30, 30, 29, 30, 29],
+		[1435, 29, 30, 29, 30, 29, 30, 29, 30, 30, 30, 29, 30],
+		[1436, 29, 30, 29, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+		[1437, 29, 30, 30, 29, 30, 29, 29, 30, 29, 29, 30, 30],
+		[1438, 29, 30, 30, 30, 29, 30, 29, 29, 30, 29, 29, 30],
+		[1439, 29, 30, 30, 30, 30, 29, 30, 29, 29, 30, 29, 29],
+		[1440, 30, 29, 30, 30, 30, 29, 30, 30, 29, 29, 30, 29],
+		[1441, 29, 30, 29, 30, 30, 29, 30, 30, 29, 30, 29, 30],
+		[1442, 29, 29, 30, 29, 30, 29, 30, 30, 29, 30, 30, 29],
+		[1443, 29, 30, 30, 29, 29, 30, 29, 30]
+	],
+	"expJd": 2459660
+}`
+
+var monthData *MonthData
+
+// ######## MonthData methods ########
+
+func (mdata *MonthData) Load() {
+	monthLenByYear := map[int][]int{}
+	for _, row := range mdata.MonthLen {
+		monthLenByYear[row[0]] = row[1:]
+	}
+	mdata.setMonthLenByYear(monthLenByYear)
+}
+
+func (mdata *MonthData) setMonthLenByYear(monthLenByYear map[int][]int) {
+	endJd := mdata.StartJd
+	monthLenByYm := map[int]int{}
+	for year, lengthList := range monthLenByYear {
+		for mm, length := range lengthList {
+			// mm is month - 1
+			if length <= 0 {
+				continue
+			}
+			monthLenByYm[year*12+mm] = length
+			endJd += length
+		}
+	}
+	mdata.MonthLenByYm = monthLenByYm
+	mdata.EndJd = endJd
+}
+
+func (mdata *MonthData) GetDateFromJd(jd int) *lib.Date {
+	if !(mdata.EndJd >= jd && jd >= mdata.StartJd) {
+		return nil
+	}
+	y := mdata.StartDate[0]
+	m := mdata.StartDate[1]
+	d := mdata.StartDate[2]
+	ym := y*12 + m - 1
+	startJd := mdata.StartJd
+	for jd > startJd {
+		monthLen := mdata.MonthLenByYm[ym]
+		jdm0 := jd - monthLen
+
+		if jdm0 <= startJd-d {
+			d = d + jd - startJd
+			break
+		}
+
+		if startJd-d < jdm0 && jdm0 <= startJd {
+			ym += 1
+			d = d + jd - startJd - monthLen
+			break
+		}
+
+		// assert(jdm0 > startJd)
+		ym += 1
+		jd -= monthLen
+	}
+	year, mm := Divmod(ym, 12)
+	return lib.NewDate(
+		year,
+		uint8(mm+1),
+		uint8(d),
+	)
+}
+
+func (mdata *MonthData) GetJdFromDate(date *lib.Date) (int, bool) {
+	year := date.Year
+	ym := year*12 + int(date.Month) - 1
+	_, ok := mdata.MonthLenByYm[ym-1]
+	if !ok {
+		return 0, false
+	}
+	ym0 := mdata.StartDate[0]*12 + mdata.StartDate[1] - 1
+	jd := mdata.StartJd
+	for ymi := ym0; ymi < ym; ymi++ {
+		plus, ok := mdata.MonthLenByYm[ymi]
+		if !ok {
+			panic("mdata.MonthLenByYm[ymi]")
+		}
+		jd += plus
+	}
+	return jd + int(date.Day) - 1, true
+}
+
 // #############################
 
 func init() {
@@ -72,6 +199,23 @@ func init() {
 		JdTo,
 		GetMonthLen,
 	)
+	SetUseMonthData(useMonthData)
+}
+
+func SetUseMonthData(use bool) {
+	if !use {
+		useMonthData = false
+		return
+	}
+	if monthData == nil {
+		monthData = &MonthData{}
+		err := json.Unmarshal([]byte(monthDataJSON), monthData)
+		if err != nil {
+			panic(err)
+		}
+		monthData.Load()
+	}
+	useMonthData = true
 }
 
 func IsLeap(year int) bool {
@@ -79,6 +223,12 @@ func IsLeap(year int) bool {
 }
 
 func ToJd(date *lib.Date) int {
+	if useMonthData { // and HijriAlg==0
+		jd, ok := monthData.GetJdFromDate(date)
+		if ok {
+			return jd
+		}
+	}
 	return (int(date.Day) +
 		int(math.Ceil(29.5*float64(date.Month-1))) +
 		(date.Year-1)*354 +
@@ -88,6 +238,12 @@ func ToJd(date *lib.Date) int {
 
 func JdTo(jd int) *lib.Date {
 	// jdf := jd + 0.5
+	if useMonthData { // && HijriAlg==0
+		date := monthData.GetDateFromJd(jd)
+		if date != nil {
+			return date
+		}
+	}
 	year := Div(30*(jd-1-Epoch)+10646, 10631)
 	month := uint8(IntMin(
 		12,
@@ -100,6 +256,16 @@ func JdTo(jd int) *lib.Date {
 }
 
 func GetMonthLen(year int, month uint8) uint8 {
+	if useMonthData { // && HijriAlg==0
+		if month == 12 {
+			return uint8(
+				ToJd(lib.NewDate(year+1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1)),
+			)
+		}
+		return uint8(
+			ToJd(lib.NewDate(year, month+1, 1)) - ToJd(lib.NewDate(year, month, 1)),
+		)
+	}
 	if month%2 == 1 { // safe %
 		return 30
 	}
