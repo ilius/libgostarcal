@@ -1,8 +1,8 @@
 package main
 
-import "fmt"
-
 import (
+	"fmt"
+
 	lib "github.com/ilius/libgostarcal"
 	. "github.com/ilius/libgostarcal/cal_types/hijri"
 )
