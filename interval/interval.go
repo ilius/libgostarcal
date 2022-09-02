@@ -345,6 +345,51 @@ func (list IntervalList) Intersection(list2 IntervalList) (IntervalList, error) 
 	return IntersectionOfSomeIntervalLists(list, list2)
 }
 
+type IntervalListIntersectionState struct {
+	hasNil        bool
+	start         int64
+	openStartList []int64
+	result        IntervalList
+}
+
+func intersectionOfSomeIntervalLists_endPoint(
+	state *IntervalListIntersectionState,
+	point *IntervalPoint,
+) error {
+	state.hasNil = false
+	state.start = MIN_INT64
+	for _, tmpStart := range state.openStartList {
+		if tmpStart == MIN_INT64 {
+			state.hasNil = true
+			// break // FIXME
+		}
+		if tmpStart > state.start {
+			state.start = tmpStart
+		}
+	}
+	if !state.hasNil {
+		if state.start > point.Pos {
+			return fmt.Errorf(
+				"Internal Error: start - point.Pos = %d",
+				state.start-point.Pos,
+			)
+		}
+		if point.Pos > state.start || point.Closed {
+			// fmt.Println("adding", Interval{start, point.Pos, point.Closed}, "  point  ", point)
+			state.result = append(state.result, Interval{
+				state.start,
+				point.Pos,
+				point.Closed,
+			})
+		}
+	}
+	// if start == point.Pos:## FIXME
+	//    print('start = point.Pos = %s, IsEnd=%s'%(start%(24*3600)/3600.0, point.IsEnd))
+	state.openStartList[point.ListId] = MIN_INT64
+	// fmt.Printf("openStartList[%v] = %v\n", point.ListId, MIN_INT64)
+	return nil
+}
+
 func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error) {
 	var err error
 	listCount := len(lists)
@@ -365,63 +410,43 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 		}
 	}
 	points.Sort()
-	result := make(IntervalList, 0, intervalCount) // smaller capacity? FIXME
 
-	openStartList := make([]int64, listCount)
-	for i := 0; i < listCount; i++ {
-		openStartList[i] = MIN_INT64
+	state := &IntervalListIntersectionState{
+		openStartList: make([]int64, listCount),
+		result:        make(IntervalList, 0, intervalCount),
+		// smaller capacity for result? FIXME
 	}
-	var hasNil bool
-	var start int64
+	for i := 0; i < listCount; i++ {
+		state.openStartList[i] = MIN_INT64
+	}
 	// fmt.Printf("points = %v\n\n", points)
 	for _, point := range points {
 		// fmt.Printf("point:    %v\n", point)
-		if point.IsEnd { // end (closed or open)
+		if point.IsEnd {
+			// end point (closed or open)
 			// end == point.Pos
-			hasNil = false
-			start = MIN_INT64
-			for _, tmpStart := range openStartList {
-				if tmpStart == MIN_INT64 {
-					hasNil = true
-					// break // FIXME
-				}
-				if tmpStart > start {
-					start = tmpStart
-				}
+			err := intersectionOfSomeIntervalLists_endPoint(state, &point)
+			if err != nil {
+				return nil, err
 			}
-			if !hasNil {
-				if start > point.Pos {
-					return nil, fmt.Errorf(
-						"Internal Error: start - point.Pos = %d",
-						start-point.Pos,
-					)
-				}
-				if point.Pos > start || point.Closed {
-					// fmt.Println("adding", Interval{start, point.Pos, point.Closed}, "  point  ", point)
-					result = append(result, Interval{start, point.Pos, point.Closed})
-				}
-			}
-			// if start == point.Pos:## FIXME
-			//    print('start = point.Pos = %s, IsEnd=%s'%(start%(24*3600)/3600.0, point.IsEnd))
-			openStartList[point.ListId] = MIN_INT64
-			// fmt.Printf("openStartList[%v] = %v\n", point.ListId, MIN_INT64)
-		} else { // start
-			// start == point.Pos
-			if openStartList[point.ListId] != MIN_INT64 {
-				// for _, list := range lists { fmt.Println(list) }
-				return nil, fmt.Errorf(
-					"Internal Error: point:  %v   openStartList: %v",
-					point,
-					openStartList,
-				)
-			}
-			openStartList[point.ListId] = point.Pos
-			// fmt.Printf("openStartList[%v] = %v\n", point.ListId, point.Pos)
-
+			continue
 		}
+		// start point
+		// start == point.Pos
+		if state.openStartList[point.ListId] != MIN_INT64 {
+			// for _, list := range lists { fmt.Println(list) }
+			return nil, fmt.Errorf(
+				"Internal Error: point:  %v   openStartList: %v",
+				point,
+				state.openStartList,
+			)
+		}
+		state.openStartList[point.ListId] = point.Pos
+		// fmt.Printf("openStartList[%v] = %v\n", point.ListId, point.Pos)
+
 	}
 
-	return result, nil
+	return state.result, nil
 }
 
 func IntervalListByNumList(nums []int64, minCount int) IntervalList {
