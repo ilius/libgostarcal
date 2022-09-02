@@ -51,8 +51,8 @@ func makeEpoch(str string) int64 {
 	return tm.Unix()
 }
 
-func makeInterval(startStr string, endStr string) Interval {
-	return Interval{
+func makeInterval(startStr string, endStr string) *Interval {
+	return &Interval{
 		Start:     makeEpoch(startStr),
 		End:       makeEpoch(endStr),
 		ClosedEnd: false,
