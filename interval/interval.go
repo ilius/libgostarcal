@@ -105,7 +105,11 @@ func parseInterval(str string) (*Interval, error) {
 		if startErr != nil {
 			return nil, startErr
 		}
-		return &Interval{int64(start), int64(start), true}, nil
+		return &Interval{
+			int64(start),
+			int64(start),
+			true,
+		}, nil
 	}
 	startStr := str[:dashIndex+1]
 	endStr := str[dashIndex+2:]
@@ -123,7 +127,11 @@ func parseInterval(str string) (*Interval, error) {
 	if start == end {
 		closedEnd = true
 	}
-	return &Interval{int64(start), int64(end), closedEnd}, nil
+	return &Interval{
+		int64(start),
+		int64(end),
+		closedEnd,
+	}, nil
 }
 
 type IntervalPoint struct {
@@ -135,21 +143,21 @@ type IntervalPoint struct {
 	// used for `intersection` only, otherwise set to zero
 }
 
-func (p IntervalPoint) String() string {
-	var format string
+func (p IntervalPoint) getFormat() string {
 	if p.IsEnd {
 		if p.Closed {
-			format = "%v%v]"
-		} else {
-			format = "%v%v)"
+			return "%v%v]"
 		}
-	} else {
-		if p.Closed {
-			format = "[%v%v"
-		} else {
-			format = "(%v%v"
-		}
+		return "%v%v)"
 	}
+	if p.Closed {
+		return "[%v%v"
+	}
+	return "(%v%v"
+}
+
+func (p IntervalPoint) String() string {
+	format := p.getFormat()
 	/*
 	   return fmt.Sprintf(
 	       "\n    (Pos=%v, IsEnd=%v, Closed=%v, ListId=%v)",
@@ -157,7 +165,8 @@ func (p IntervalPoint) String() string {
 	       p.IsEnd,
 	       p.Closed,
 	       p.ListId,
-	   )*/
+	   )
+   */
 	symbol := string('A' + byte(p.ListId))
 	return fmt.Sprintf(" "+format+" ", symbol, p.Pos)
 }
@@ -171,17 +180,19 @@ func (p IntervalPointList) Less(i, j int) bool {
 	b := p[j]
 	if a.Pos != b.Pos {
 		return a.Pos < b.Pos
-	} else if a.IsEnd != b.IsEnd {
+	}
+	if a.IsEnd != b.IsEnd {
 		// Start always come before End
 		return b.IsEnd
-	} else if a.Closed != b.Closed {
+	}
+	if a.Closed != b.Closed {
 		// ClosedStart < OpenStart < OpenEnd < ClosedEnd
 		if a.IsEnd { // && b.IsEnd
 			return b.Closed // && !a.Closed
-		} else {
-			return a.Closed // && !b.Closed
 		}
-	} else if a.ListId != b.ListId {
+		return a.Closed // && !b.Closed
+	}
+	if a.ListId != b.ListId {
 		return a.ListId < b.ListId
 	}
 	return false
@@ -198,25 +209,29 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 	startedStack := make(Int64Stack, 0, pcount)
 	var start int64
 	for _, point := range points {
-		if point.IsEnd {
-			if len(startedStack) == 0 {
-				return nil, fmt.Errorf(
-					"point='%v', startedStack=[]\n",
-					point,
-				)
-			}
-			startedStack, start = startedStack.Pop()
-			// fmt.Println("pop:", start, ", new len:", len(startedStack))
-			if len(startedStack) == 0 {
-				list = append(list, &Interval{start, point.Pos, point.Closed})
-				// We will replace closed ends (with 2 intervals) after the final operation (intersection)
-				// By: list = list.Humanize()
-				// If we do it here, something breaks, because it's not mathematical,
-				// and we won't have a fully normalized IntervalList
-			}
-		} else {
+		if !point.IsEnd {
 			// fmt.Println("push:", point.Pos)
 			startedStack = startedStack.Push(point.Pos)
+			continue
+		}
+		if len(startedStack) == 0 {
+			return nil, fmt.Errorf(
+				"point='%v', startedStack=[]\n",
+				point,
+			)
+		}
+		startedStack, start = startedStack.Pop()
+		// fmt.Println("pop:", start, ", new len:", len(startedStack))
+		if len(startedStack) == 0 {
+			list = append(list, &Interval{
+				start,
+				point.Pos,
+				point.Closed,
+			})
+			// We will replace closed ends (with 2 intervals) after the final operation (intersection)
+			// By: list = list.Humanize()
+			// If we do it here, something breaks, because it's not mathematical,
+			// and we won't have a fully normalized IntervalList
 		}
 	}
 	return list, nil
@@ -234,7 +249,8 @@ func (list IntervalList) String() string {
 
 func (list IntervalList) GetPointList(listId int) IntervalPointList {
 	count := len(list)
-	points := make(IntervalPointList, 2*count) // we need exactly `2*count` spaces
+	// we need exactly `2*count` spaces
+	points := make(IntervalPointList, 2*count)
 	for ii, interval := range list {
 		// if interval.Start > interval.End // what? FIXME
 		points[2*ii] = IntervalPoint{
@@ -293,15 +309,13 @@ func (list IntervalList) Humanize() IntervalList {
 func ParseIntervalList(str string) (IntervalList, error) {
 	parts := strings.Split(str, " ")
 	count := len(parts)
-	list := make(IntervalList, 0, count)
-	var interval *Interval
-	var err error
-	for _, intervalStr := range parts {
-		interval, err = ParseInterval(intervalStr)
+	list := make(IntervalList, count)
+	for index, intervalStr := range parts {
+		interval, err := ParseInterval(intervalStr)
 		if err != nil {
 			return list, err
 		}
-		list = append(list, interval)
+		list[index] = interval
 	}
 	return list, nil
 }
@@ -309,16 +323,14 @@ func ParseIntervalList(str string) (IntervalList, error) {
 func ParseClosedIntervalList(str string) (IntervalList, error) {
 	parts := strings.Split(str, " ")
 	count := len(parts)
-	list := make(IntervalList, 0, count)
-	var interval *Interval
-	var err error
-	for _, intervalStr := range parts {
-		interval, err = ParseInterval(intervalStr)
+	list := make(IntervalList, count)
+	for index, intervalStr := range parts {
+		interval, err := ParseInterval(intervalStr)
 		if err != nil {
 			return list, err
 		}
 		interval.ClosedEnd = true
-		list = append(list, interval)
+		list[index] = interval
 	}
 	return list, nil
 }
