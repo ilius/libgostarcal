@@ -16,11 +16,13 @@ import (
 // const time_format = "2006-01-02 15:04:05";
 const time_format = "2006-01-02 15:04"
 
+var greg = gregorian.New()
+
 func (occur JdOccurSet) String() string {
 	strList := make([]string, 0, occur.Len())
 	for jdI := range occur.JdSet.Iter() {
 		jd := jdI.(int)
-		date := gregorian.JdTo(jd)
+		date := greg.JdTo(jd)
 		strList = append(strList, date.String())
 	}
 	return fmt.Sprintf(
@@ -63,7 +65,7 @@ func makeJdSet(strList ...string) Set {
 	set := NewSet()
 	for _, str := range strList {
 		date, _ := lib.ParseDate(str)
-		set.Add(gregorian.ToJd(date))
+		set.Add(greg.ToJd(date))
 	}
 	return set
 }

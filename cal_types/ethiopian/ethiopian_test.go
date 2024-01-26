@@ -4,9 +4,12 @@ import (
 	"testing"
 
 	"github.com/ilius/is/v2"
+	"github.com/ilius/libgostarcal/cal_types"
 
 	lib "github.com/ilius/libgostarcal"
 )
+
+var calType cal_types.CalType = New()
 
 func TestIsLeap(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
@@ -53,7 +56,7 @@ func TestIsLeap(t *testing.T) {
 		2029: false,
 	}
 	for year, isLeap := range testMap {
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(calType.IsLeap(year), isLeap)
 	}
 }
 
@@ -98,7 +101,7 @@ func TestToJd(t *testing.T) {
 		lib.NewDate(2017, 12, 1): 2460895,
 	}
 	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(calType.ToJd(date), jd)
 	}
 }
 
@@ -145,7 +148,7 @@ func TestGetMonthLen(t *testing.T) {
 	for ym, monthLen := range testMap {
 		year := ym[0]
 		month := uint8(ym[1])
-		is.AddMsg("ym={%v, %v}", year, month).Equal(GetMonthLen(year, month), monthLen)
+		is.AddMsg("ym={%v, %v}", year, month).Equal(calType.GetMonthLen(year, month), monthLen)
 	}
 }
 
@@ -155,11 +158,11 @@ func TestConvert(t *testing.T) {
 	endYear := 2050
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
-			monthLen := GetMonthLen(year, month)
+			monthLen := calType.GetMonthLen(year, month)
 			for day := uint8(1); day <= monthLen; day++ {
 				date := lib.NewDate(year, month, day)
-				jd := ToJd(date)
-				ndate := JdTo(jd)
+				jd := calType.ToJd(date)
+				ndate := calType.JdTo(jd)
 				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
 			}
 		}

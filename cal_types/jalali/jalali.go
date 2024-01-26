@@ -27,7 +27,6 @@ import (
 	"log"
 
 	lib "github.com/ilius/libgostarcal"
-	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
 )
 
@@ -58,28 +57,51 @@ var MonthNamesAb = []string{
 
 // ###### Other Globals  #######
 
-var monthLen = []uint8{31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30}
-var monthLenSum = []int{0, 31, 62, 93, 124, 155, 186, 216, 246, 276, 306, 336, 366}
+var (
+	monthLen    = []uint8{31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30}
+	monthLenSum = []int{0, 31, 62, 93, 124, 155, 186, 216, 246, 276, 306, 336, 366}
+)
 
 var alg2820 bool = false
 
 // #############################
 
-func init() {
-	cal_types.RegisterCalType(
-		Name,
-		Desc,
-		Epoch,
-		MinMonthLen,
-		MaxMonthLen,
-		AvgYearLen,
-		MonthNames,
-		MonthNamesAb,
-		IsLeap,
-		ToJd,
-		JdTo,
-		GetMonthLen,
-	)
+func New() *calTypeImp {
+	return &calTypeImp{}
+}
+
+type calTypeImp struct{}
+
+func (*calTypeImp) Name() string {
+	return Name
+}
+
+func (*calTypeImp) Desc() string {
+	return Desc
+}
+
+func (*calTypeImp) Epoch() int {
+	return Epoch
+}
+
+func (*calTypeImp) MinMonthLen() uint8 {
+	return MinMonthLen
+}
+
+func (*calTypeImp) MaxMonthLen() uint8 {
+	return MaxMonthLen
+}
+
+func (*calTypeImp) AvgYearLen() float64 {
+	return AvgYearLen
+}
+
+func (*calTypeImp) MonthNames() []string {
+	return MonthNames
+}
+
+func (*calTypeImp) MonthNamesAb() []string {
+	return MonthNamesAb
 }
 
 // SetAlgorithm2820: enable 2820-year algorithm by passing true
@@ -91,7 +113,7 @@ func SetAlgorithm2820(useAlg2820 bool) {
 // IsLeap: return true if year is leap, false otherwise
 // Normal: esfand = 29 days
 // Leap: esfand = 30 days
-func IsLeap(year int) bool {
+func (*calTypeImp) IsLeap(year int) bool {
 	if alg2820 {
 		// using 2820-years algorithm
 		/* if we want to remove Year Zero:
@@ -108,7 +130,7 @@ func IsLeap(year int) bool {
 }
 
 // ToJd: calculate Julian day from Jalali date
-func ToJd(date *lib.Date) int {
+func (*calTypeImp) ToJd(date *lib.Date) int {
 	if alg2820 {
 		// using 2820-years algorithm
 		epbase := date.Year - 474
@@ -145,10 +167,10 @@ func getMonthDayFromYdays(yday int) (uint8, uint8) {
 }
 
 // JdTo: calculate Jalali date from Julian day
-func JdTo(jd int) *lib.Date {
+func (ct *calTypeImp) JdTo(jd int) *lib.Date {
 	if alg2820 {
 		// using 2820-years algorithm
-		deltaDays := jd - ToJd(lib.NewDate(475, 1, 1))
+		deltaDays := jd - ct.ToJd(lib.NewDate(475, 1, 1))
 		cycle, cyear := Divmod(deltaDays, 1029983)
 		var ycycle int
 		if cyear == 1029982 {
@@ -164,7 +186,7 @@ func JdTo(jd int) *lib.Date {
 			year--
 		}
 		*/
-		yday := jd - ToJd(lib.NewDate(year, 1, 1)) + 1
+		yday := jd - ct.ToJd(lib.NewDate(year, 1, 1)) + 1
 		month, day := getMonthDayFromYdays(yday)
 		return lib.NewDate(year, month, day)
 	}
@@ -185,9 +207,9 @@ func JdTo(jd int) *lib.Date {
 	return lib.NewDate(year, month, day)
 }
 
-func GetMonthLen(year int, month uint8) uint8 {
+func (ct *calTypeImp) GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
-		if IsLeap(year) {
+		if ct.IsLeap(year) {
 			return 30
 		}
 		return 29

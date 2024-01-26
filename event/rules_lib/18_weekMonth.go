@@ -32,8 +32,10 @@ import (
 	"fmt"
 )
 
-const R_weekMonth = "weekMonth"
-const T_weekMonth = "WeekMonth"
+const (
+	R_weekMonth = "weekMonth"
+	T_weekMonth = "WeekMonth"
+)
 
 type WeekMonth struct {
 	WeekIndex int `json:"weekIndex"` // 0..4

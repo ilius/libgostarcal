@@ -23,7 +23,6 @@ import (
 
 	lib "github.com/ilius/libgostarcal"
 
-	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
 )
 
@@ -184,22 +183,42 @@ func (mdata *MonthData) GetJdFromDate(date *lib.Date) (int, bool) {
 
 // #############################
 
-func init() {
-	cal_types.RegisterCalType(
-		Name,
-		Desc,
-		Epoch,
-		MinMonthLen,
-		MaxMonthLen,
-		AvgYearLen,
-		MonthNames,
-		MonthNamesAb,
-		IsLeap,
-		ToJd,
-		JdTo,
-		GetMonthLen,
-	)
-	SetUseMonthData(useMonthData)
+func New() *calTypeImp {
+	return &calTypeImp{}
+}
+
+type calTypeImp struct{}
+
+func (*calTypeImp) Name() string {
+	return Name
+}
+
+func (*calTypeImp) Desc() string {
+	return Desc
+}
+
+func (*calTypeImp) Epoch() int {
+	return Epoch
+}
+
+func (*calTypeImp) MinMonthLen() uint8 {
+	return MinMonthLen
+}
+
+func (*calTypeImp) MaxMonthLen() uint8 {
+	return MaxMonthLen
+}
+
+func (*calTypeImp) AvgYearLen() float64 {
+	return AvgYearLen
+}
+
+func (*calTypeImp) MonthNames() []string {
+	return MonthNames
+}
+
+func (*calTypeImp) MonthNamesAb() []string {
+	return MonthNamesAb
 }
 
 func SetUseMonthData(use bool) {
@@ -218,11 +237,11 @@ func SetUseMonthData(use bool) {
 	useMonthData = true
 }
 
-func IsLeap(year int) bool {
+func (*calTypeImp) IsLeap(year int) bool {
 	return Mod(year*11+14, 30) < 11
 }
 
-func ToJd(date *lib.Date) int {
+func (*calTypeImp) ToJd(date *lib.Date) int {
 	if useMonthData { // and HijriAlg==0
 		jd, ok := monthData.GetJdFromDate(date)
 		if ok {
@@ -236,7 +255,7 @@ func ToJd(date *lib.Date) int {
 		Epoch)
 }
 
-func JdTo(jd int) *lib.Date {
+func (ct *calTypeImp) JdTo(jd int) *lib.Date {
 	// jdf := jd + 0.5
 	if useMonthData { // && HijriAlg==0
 		date := monthData.GetDateFromJd(jd)
@@ -248,28 +267,28 @@ func JdTo(jd int) *lib.Date {
 	month := uint8(IntMin(
 		12,
 		int(math.Ceil(
-			(float64(jd)+0.5-float64(ToJd(lib.NewDate(year, 1, 1))))/29.5,
+			(float64(jd)+0.5-float64(ct.ToJd(lib.NewDate(year, 1, 1))))/29.5,
 		)),
 	))
-	day := uint8(jd - ToJd(lib.NewDate(year, month, 1)) + 1)
+	day := uint8(jd - ct.ToJd(lib.NewDate(year, month, 1)) + 1)
 	return lib.NewDate(year, month, day)
 }
 
-func GetMonthLen(year int, month uint8) uint8 {
+func (ct *calTypeImp) GetMonthLen(year int, month uint8) uint8 {
 	if useMonthData { // && HijriAlg==0
 		if month == 12 {
 			return uint8(
-				ToJd(lib.NewDate(year+1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1)),
+				ct.ToJd(lib.NewDate(year+1, 1, 1)) - ct.ToJd(lib.NewDate(year, 12, 1)),
 			)
 		}
 		return uint8(
-			ToJd(lib.NewDate(year, month+1, 1)) - ToJd(lib.NewDate(year, month, 1)),
+			ct.ToJd(lib.NewDate(year, month+1, 1)) - ct.ToJd(lib.NewDate(year, month, 1)),
 		)
 	}
 	if month%2 == 1 { // safe %
 		return 30
 	}
-	if month == 12 && IsLeap(year) {
+	if month == 12 && ct.IsLeap(year) {
 		return 30
 	}
 	return 29

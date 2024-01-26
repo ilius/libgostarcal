@@ -166,7 +166,7 @@ func (p IntervalPoint) String() string {
 	       p.Closed,
 	       p.ListId,
 	   )
-   */
+	*/
 	symbol := string('A' + byte(p.ListId))
 	return fmt.Sprintf(" "+format+" ", symbol, p.Pos)
 }

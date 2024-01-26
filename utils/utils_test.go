@@ -6,7 +6,6 @@ import (
 	"time"
 
 	lib "github.com/ilius/libgostarcal"
-	"github.com/ilius/libgostarcal/cal_types/gregorian"
 )
 
 func TestTimeZone(t *testing.T) {
@@ -21,11 +20,11 @@ func TestTimeZone(t *testing.T) {
 	// date := CalTypesMap["gregorian"].JdTo(jd)
 	date, _ := GetCurrentDate("gregorian")
 	t.Log("Date:", date)
-	startJd := gregorian.ToJd(lib.NewDate(2016, 1, 1))
-	endJd := gregorian.ToJd(lib.NewDate(2020, 1, 1))
+	startJd := greg.ToJd(lib.NewDate(2016, 1, 1))
+	endJd := greg.ToJd(lib.NewDate(2020, 1, 1))
 	for jd := startJd; jd < endJd; jd++ {
 		epoch1 := GetEpochByJd(jd, loc)
-		gdate := gregorian.JdTo(jd)
+		gdate := greg.JdTo(jd)
 		tm := time.Date(
 			gdate.Year,
 			time.Month(gdate.Month), // date.Month is uint8
@@ -65,13 +64,13 @@ func TestGetJdListFromEpochRange(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	startDate := lib.NewDate(2015, 03, 12)
-	endDate := lib.NewDate(2016, 07, 02)
+	startDate := lib.NewDate(2015, 3, 12)
+	endDate := lib.NewDate(2016, 7, 2)
 	startEpoch := GetEpochByGDate(startDate, loc) + randSec1
 	endEpoch := GetEpochByGDate(endDate, loc) + randSec2
 	startJd, endJd := GetJdRangeFromEpochRange(startEpoch, endEpoch, loc)
-	startJdDelta := startJd - gregorian.ToJd(startDate)
-	endJdDelta := endJd - (gregorian.ToJd(endDate) + 1)
+	startJdDelta := startJd - greg.ToJd(startDate)
+	endJdDelta := endJd - (greg.ToJd(endDate) + 1)
 	if startJdDelta != 0 {
 		t.Error("non-zero: startJdDelta: ", startJdDelta)
 	}

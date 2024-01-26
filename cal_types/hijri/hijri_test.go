@@ -7,9 +7,13 @@ import (
 
 	"github.com/ilius/is/v2"
 	lib "github.com/ilius/libgostarcal"
+	"github.com/ilius/libgostarcal/cal_types"
 )
 
+var calType cal_types.CalType = New()
+
 func init() {
+	SetUseMonthData(true)
 	// fmt.Printf("%#v\n", monthData.MonthLenByYm)
 	fmt.Printf("endJd = %v\n", monthData.EndJd)
 }
@@ -59,7 +63,7 @@ func testIsLeap(t *testing.T) {
 		1449: false,
 	}
 	for year, isLeap := range testMap {
-		is.AddMsg("mismatch isLeap, year=%v", year).Equal(IsLeap(year), isLeap)
+		is.AddMsg("mismatch isLeap, year=%v", year).Equal(calType.IsLeap(year), isLeap)
 	}
 }
 
@@ -124,7 +128,7 @@ func TestToJd_1(t *testing.T) {
 		lib.NewDate(1439, 12, 1): 2458345,
 	}
 	for date, jd := range testMap {
-		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(ToJd(date), jd)
+		is.AddMsg("mismatch jd, date=%v, jd=%v", date, jd).Equal(calType.ToJd(date), jd)
 	}
 }
 
@@ -359,7 +363,7 @@ func TestToJd_2(t *testing.T) {
 	for _, item := range testList {
 		date := item[0].(*lib.Date)
 		expectedJd := item[1].(int)
-		actualJd := ToJd(date)
+		actualJd := calType.ToJd(date)
 		is.AddMsg(
 			"mismatch jd, date=%v, jd_diff=%v",
 			date,
@@ -614,7 +618,7 @@ func TestJdTo_2(t *testing.T) {
 	for _, item := range testList {
 		jd := item[0].(int)
 		expectedDate := item[1].(*lib.Date)
-		actualDate := JdTo(jd)
+		actualDate := calType.JdTo(jd)
 		is.AddMsg(
 			"mismatch date, jd=%v",
 			jd,
@@ -677,7 +681,7 @@ func TestMonthLen_1(t *testing.T) {
 	}
 	for ym, mLen := range testMap {
 		is.AddMsg("mismatch month length, ym=%v", ym).Equal(
-			GetMonthLen(ym[0], uint8(ym[1])),
+			calType.GetMonthLen(ym[0], uint8(ym[1])),
 			mLen,
 		)
 	}
@@ -690,11 +694,11 @@ func TestConvert_1(t *testing.T) {
 	endYear := 1480
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
-			monthLen := GetMonthLen(year, month)
+			monthLen := calType.GetMonthLen(year, month)
 			for day := uint8(1); day <= monthLen; day++ {
 				date := lib.NewDate(year, month, day)
-				jd := ToJd(date)
-				ndate := JdTo(jd)
+				jd := calType.ToJd(date)
+				ndate := calType.JdTo(jd)
 				is.AddMsg("jd=%v, date=%v, ndate=%v", jd, date, ndate).Equal(ndate, date)
 			}
 		}

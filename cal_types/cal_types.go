@@ -40,105 +40,16 @@ type CalType interface {
 	GetMonthLen(year int, month uint8) uint8
 }
 
-type calTypeStruct struct {
-	name string
-	desc string
-
-	isLeap      func(year int) bool
-	toJd        func(date *lib.Date) int
-	jdTo        func(jd int) *lib.Date
-	getMonthLen func(year int, month uint8) uint8
-
-	monthNames   []string
-	monthNamesAb []string
-
-	epoch       int
-	minMonthLen uint8
-	maxMonthLen uint8
-	avgYearLen  float64
-}
-
-func (ct *calTypeStruct) Name() string {
-	return ct.name
-}
-
-func (ct *calTypeStruct) Desc() string {
-	return ct.desc
-}
-
-func (ct *calTypeStruct) Epoch() int {
-	return ct.epoch
-}
-
-func (ct *calTypeStruct) MinMonthLen() uint8 {
-	return ct.minMonthLen
-}
-
-func (ct *calTypeStruct) MaxMonthLen() uint8 {
-	return ct.maxMonthLen
-}
-
-func (ct *calTypeStruct) AvgYearLen() float64 {
-	return ct.avgYearLen
-}
-
-func (ct *calTypeStruct) MonthNames() []string {
-	return ct.monthNames
-}
-
-func (ct *calTypeStruct) MonthNamesAb() []string {
-	return ct.monthNamesAb
-}
-
-func (ct *calTypeStruct) IsLeap(year int) bool {
-	return ct.isLeap(year)
-}
-
-func (ct *calTypeStruct) ToJd(date *lib.Date) int {
-	return ct.toJd(date)
-}
-
-func (ct *calTypeStruct) JdTo(jd int) *lib.Date {
-	return ct.jdTo(jd)
-}
-
-func (ct *calTypeStruct) GetMonthLen(year int, month uint8) uint8 {
-	return ct.getMonthLen(year, month)
-}
-
-var CalTypesList []CalType
-var CalTypesMap = make(map[string]CalType)
+var (
+	CalTypesList []CalType
+	CalTypesMap  = make(map[string]CalType)
+)
 
 func RegisterCalType(
-	name string,
-	desc string,
-	epoch int,
-	minMonthLen uint8,
-	maxMonthLen uint8,
-	avgYearLen float64,
-	monthNames []string,
-	monthNamesAb []string,
-	isLeap func(year int) bool,
-	toJd func(date *lib.Date) int,
-	jdTo func(jd int) *lib.Date,
-	getMonthLen func(year int, month uint8) uint8,
+	calType CalType,
 ) {
-	calType := &calTypeStruct{
-		name:         name,
-		desc:         desc,
-		epoch:        epoch,
-		minMonthLen:  minMonthLen,
-		maxMonthLen:  maxMonthLen,
-		avgYearLen:   avgYearLen,
-		monthNames:   monthNames,
-		monthNamesAb: monthNamesAb,
-		isLeap:       isLeap,
-		toJd:         toJd,
-		jdTo:         jdTo,
-		getMonthLen:  getMonthLen,
-	}
 	CalTypesList = append(CalTypesList, calType)
-	CalTypesMap[name] = calType
+	CalTypesMap[calType.Name()] = calType
 }
 
 func invalidCalType(calTypeName string) error {

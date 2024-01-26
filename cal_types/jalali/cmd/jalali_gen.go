@@ -1,11 +1,13 @@
 package main
 
-import "fmt"
-
 import (
+	"fmt"
+
 	lib "github.com/ilius/libgostarcal"
-	. "github.com/ilius/libgostarcal/cal_types/jalali"
+	"github.com/ilius/libgostarcal/cal_types/jalali"
 )
+
+var calType = jalali.New()
 
 func main() {
 	PrintIsLeap(-100, 11)
@@ -17,7 +19,7 @@ func main() {
 func PrintIsLeap(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
 		isLeapStr := " "
-		if IsLeap(year) {
+		if calType.IsLeap(year) {
 			isLeapStr = "L"
 		}
 		fmt.Printf(
@@ -34,7 +36,7 @@ func PrintToJd(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
 			date = lib.NewDate(year, month, 1)
-			jd = ToJd(date)
+			jd = calType.ToJd(date)
 			fmt.Printf(
 				"\t\tlib.%v: %v,\n",
 				date.Repr(),
@@ -50,7 +52,7 @@ func PrintGetMonthLen(startYear int, endYear int, maxMonth uint8) {
 			fmt.Printf(
 				"\t\t{%v, %v}: %v,\n",
 				year, month,
-				GetMonthLen(year, month),
+				calType.GetMonthLen(year, month),
 			)
 		}
 	}

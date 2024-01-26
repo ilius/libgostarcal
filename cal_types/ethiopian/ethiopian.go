@@ -22,7 +22,6 @@ package ethiopian
 import (
 	lib "github.com/ilius/libgostarcal"
 
-	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
 )
 
@@ -64,40 +63,61 @@ var monthLens = []uint8{
 
 // #############################
 
-func init() {
-	cal_types.RegisterCalType(
-		Name,
-		Desc,
-		Epoch,
-		MinMonthLen,
-		MaxMonthLen,
-		AvgYearLen,
-		MonthNames,
-		MonthNamesAb,
-		IsLeap,
-		ToJd,
-		JdTo,
-		GetMonthLen,
-	)
+func New() *calTypeImp {
+	return &calTypeImp{}
 }
 
-func IsLeap(year int) bool {
+type calTypeImp struct{}
+
+func (*calTypeImp) Name() string {
+	return Name
+}
+
+func (*calTypeImp) Desc() string {
+	return Desc
+}
+
+func (*calTypeImp) Epoch() int {
+	return Epoch
+}
+
+func (*calTypeImp) MinMonthLen() uint8 {
+	return MinMonthLen
+}
+
+func (*calTypeImp) MaxMonthLen() uint8 {
+	return MaxMonthLen
+}
+
+func (*calTypeImp) AvgYearLen() float64 {
+	return AvgYearLen
+}
+
+func (*calTypeImp) MonthNames() []string {
+	return MonthNames
+}
+
+func (*calTypeImp) MonthNamesAb() []string {
+	return MonthNamesAb
+}
+
+func (*calTypeImp) IsLeap(year int) bool {
 	return (year+1)%4 == 0
 }
 
-func ToJd(date *lib.Date) int {
+func (*calTypeImp) ToJd(date *lib.Date) int {
 	return Epoch +
 		365*(date.Year-1) + date.Year/4 +
 		(int(date.Month-1))*30 +
 		int(date.Day) - 15
 }
 
-func JdTo(jd int) *lib.Date {
+func (ct *calTypeImp) JdTo(jd int) *lib.Date {
 	quad, dquad := Divmod(jd-Epoch, 1461)
 	yindex := IntMin(3, dquad/365) // safe /
 	year := quad*4 + yindex + 1
 
-	yearday := jd - ToJd(lib.NewDate(year, 1, 1))
+	yearday := jd - ct.ToJd(lib.NewDate(year, 1, 1))
 	month := yearday/30 + 1 // safe /
 	day := yearday%30 + 1   // safe %
 
@@ -107,7 +127,7 @@ func JdTo(jd int) *lib.Date {
 	}
 	if month == 12 {
 		mLen := 35
-		if IsLeap(year) {
+		if ct.IsLeap(year) {
 			mLen += 1
 		}
 		if day > mLen {
@@ -119,9 +139,9 @@ func JdTo(jd int) *lib.Date {
 	return lib.NewDate(year, uint8(month), uint8(day))
 }
 
-func GetMonthLen(year int, month uint8) uint8 {
+func (ct *calTypeImp) GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
-		if IsLeap(year) {
+		if ct.IsLeap(year) {
 			return 36
 		}
 		return 35

@@ -1,11 +1,13 @@
 package main
 
-import "fmt"
-
 import (
+	"fmt"
+
 	lib "github.com/ilius/libgostarcal"
-	. "github.com/ilius/libgostarcal/cal_types/ethiopian"
+	"github.com/ilius/libgostarcal/cal_types/ethiopian"
 )
+
+var calType = ethiopian.New()
 
 func main() {
 	PrintIsLeap(1990, 2030)
@@ -18,7 +20,7 @@ func PrintIsLeap(startYear int, endYear int) {
 		fmt.Printf(
 			"\t\t%v: %v,\n",
 			year,
-			IsLeap(year),
+			calType.IsLeap(year),
 		)
 	}
 }
@@ -29,7 +31,7 @@ func PrintToJd(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
 			date = lib.NewDate(year, month, 1)
-			jd = ToJd(date)
+			jd = calType.ToJd(date)
 			fmt.Printf(
 				"\t\tlib.%v: %v,\n",
 				date.Repr(),
@@ -45,7 +47,7 @@ func PrintGetMonthLen(startYear int, endYear int, maxMonth uint8) {
 			fmt.Printf(
 				"\t\t{%v, %v}: %v,\n",
 				year, month,
-				GetMonthLen(year, month),
+				calType.GetMonthLen(year, month),
 			)
 		}
 	}

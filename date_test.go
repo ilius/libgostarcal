@@ -123,7 +123,7 @@ func TestParseDateList(t *testing.T) {
 func TestDateHMSString(t *testing.T) {
 	is := is.New(t)
 	x := &DateHMS{
-		Date: NewDate(2010, 01, 03),
+		Date: NewDate(2010, 1, 3),
 		HMS:  NewHMS(7, 8, 9),
 	}
 	is.Equal(x.String(), "2010/01/03 07:08:09")
@@ -132,7 +132,7 @@ func TestDateHMSString(t *testing.T) {
 func TestDateHMSRepr(t *testing.T) {
 	is := is.New(t)
 	x := &DateHMS{
-		Date: NewDate(2010, 01, 03),
+		Date: NewDate(2010, 1, 3),
 		HMS:  NewHMS(7, 8, 9),
 	}
 	is.Equal(x.Repr(), "DateHMS{Date: NewDate(2010, 1, 3), HMS: NewHMS(7, 8, 9)}")

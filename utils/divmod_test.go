@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/ilius/is/v2"
 	"testing"
+
+	"github.com/ilius/is/v2"
 )
 
 func TestDivmod(t *testing.T) {

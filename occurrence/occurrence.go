@@ -20,9 +20,11 @@
 
 package occurrence
 
-import . "github.com/ilius/libgostarcal/utils/mapset"
-import . "github.com/ilius/libgostarcal/utils"
-import . "github.com/ilius/libgostarcal/interval"
+import (
+	. "github.com/ilius/libgostarcal/utils/mapset"
+	. "github.com/ilius/libgostarcal/utils"
+	. "github.com/ilius/libgostarcal/interval"
+)
 
 /*
 func getEventUID(event Event) string {

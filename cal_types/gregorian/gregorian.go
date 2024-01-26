@@ -21,7 +21,6 @@ import (
 	"time"
 
 	lib "github.com/ilius/libgostarcal"
-	"github.com/ilius/libgostarcal/cal_types"
 )
 
 // ###### Common Globals #######
@@ -54,28 +53,49 @@ const J1970 = 2440588
 
 // #############################
 
-func init() {
-	cal_types.RegisterCalType(
-		Name,
-		Desc,
-		Epoch,
-		MinMonthLen,
-		MaxMonthLen,
-		AvgYearLen,
-		MonthNames,
-		MonthNamesAb,
-		IsLeap,
-		ToJd,
-		JdTo,
-		GetMonthLen,
-	)
+func New() *calTypeImp {
+	return &calTypeImp{}
 }
 
-func IsLeap(year int) bool {
+type calTypeImp struct{}
+
+func (*calTypeImp) Name() string {
+	return Name
+}
+
+func (*calTypeImp) Desc() string {
+	return Desc
+}
+
+func (*calTypeImp) Epoch() int {
+	return Epoch
+}
+
+func (*calTypeImp) MinMonthLen() uint8 {
+	return MinMonthLen
+}
+
+func (*calTypeImp) MaxMonthLen() uint8 {
+	return MaxMonthLen
+}
+
+func (*calTypeImp) AvgYearLen() float64 {
+	return AvgYearLen
+}
+
+func (*calTypeImp) MonthNames() []string {
+	return MonthNames
+}
+
+func (*calTypeImp) MonthNamesAb() []string {
+	return MonthNamesAb
+}
+
+func (*calTypeImp) IsLeap(year int) bool {
 	return year%4 == 0 && (year%100 != 0 || year%400 == 0) // safe %
 }
 
-func ToJd(date *lib.Date) int {
+func (*calTypeImp) ToJd(date *lib.Date) int {
 	t := time.Date(
 		date.Year,
 		time.Month(date.Month),
@@ -87,7 +107,7 @@ func ToJd(date *lib.Date) int {
 	return J1970 + int(t.Unix()/86400)
 }
 
-func JdTo(jd int) *lib.Date {
+func (*calTypeImp) JdTo(jd int) *lib.Date {
 	t := time.Unix(
 		int64(86400*(jd-J1970)),
 		0,
@@ -99,9 +119,9 @@ func JdTo(jd int) *lib.Date {
 	)
 }
 
-func GetMonthLen(year int, month uint8) uint8 {
+func (ct *calTypeImp) GetMonthLen(year int, month uint8) uint8 {
 	if month == 12 {
-		return uint8(ToJd(lib.NewDate(year+1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1)))
+		return uint8(ct.ToJd(lib.NewDate(year+1, 1, 1)) - ct.ToJd(lib.NewDate(year, 12, 1)))
 	}
-	return uint8(ToJd(lib.NewDate(year, month+1, 1)) - ToJd(lib.NewDate(year, month, 1)))
+	return uint8(ct.ToJd(lib.NewDate(year, month+1, 1)) - ct.ToJd(lib.NewDate(year, month, 1)))
 }

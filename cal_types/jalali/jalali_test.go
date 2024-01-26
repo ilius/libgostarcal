@@ -5,12 +5,15 @@ import (
 	"testing"
 
 	"github.com/ilius/is/v2"
+	"github.com/ilius/libgostarcal/cal_types"
 
 	lib "github.com/ilius/libgostarcal"
 )
 
+var calType cal_types.CalType = New()
+
 func lastMonthLenByConvert(year int) int {
-	return ToJd(lib.NewDate(year+1, 1, 1)) - ToJd(lib.NewDate(year, 12, 1))
+	return calType.ToJd(lib.NewDate(year+1, 1, 1)) - calType.ToJd(lib.NewDate(year, 12, 1))
 }
 
 func TestIsLeap(t *testing.T) {
@@ -198,7 +201,7 @@ func TestIsLeap(t *testing.T) {
 				"mismatch isLeap, year=%v, alg2820=%v",
 				year,
 				alg2820,
-			).Equal(IsLeap(year), isLeap)
+			).Equal(calType.IsLeap(year), isLeap)
 			lastMonthLen := lastMonthLenByConvert(year)
 			lastMonthLenExpected := 29
 			if isLeap {
@@ -271,7 +274,7 @@ func TestToJd(t *testing.T) {
 				date,
 				jd,
 				alg2820,
-			).Equal(ToJd(date), jd)
+			).Equal(calType.ToJd(date), jd)
 		}
 	}
 }
@@ -319,7 +322,7 @@ func TestGetMonthLen(t *testing.T) {
 	for ym, monthLen := range testMap {
 		year := ym[0]
 		month := uint8(ym[1])
-		is.AddMsg("ym={%v, %v}", year, month).Equal(GetMonthLen(year, month), monthLen)
+		is.AddMsg("ym={%v, %v}", year, month).Equal(calType.GetMonthLen(year, month), monthLen)
 	}
 }
 
@@ -332,11 +335,11 @@ func TestConvert(t *testing.T) {
 		SetAlgorithm2820(alg2820)
 		for year := startYear; year < endYear; year++ {
 			for month := uint8(1); month <= 12; month++ {
-				monthLen := GetMonthLen(year, month)
+				monthLen := calType.GetMonthLen(year, month)
 				for day := uint8(1); day <= monthLen; day++ {
 					date := lib.NewDate(year, month, day)
-					jd := ToJd(date)
-					ndate := JdTo(jd)
+					jd := calType.ToJd(date)
+					ndate := calType.JdTo(jd)
 					is.AddMsg(
 						"jd=%v, date=%v, ndate=%v, alg2820=%v",
 						jd,

@@ -4,8 +4,10 @@ import (
 	"fmt"
 
 	lib "github.com/ilius/libgostarcal"
-	. "github.com/ilius/libgostarcal/cal_types/hijri"
+	"github.com/ilius/libgostarcal/cal_types/hijri"
 )
+
+var calType = hijri.New()
 
 func main() {
 	PrintIsLeap(1410, 1450)
@@ -17,7 +19,7 @@ func PrintIsLeap(startYear int, endYear int) {
 		fmt.Printf(
 			"\t\t%v: %v,\n",
 			year,
-			IsLeap(year),
+			calType.IsLeap(year),
 		)
 	}
 }
@@ -28,7 +30,7 @@ func PrintToJd(startYear int, endYear int) {
 	for year := startYear; year < endYear; year++ {
 		for month := uint8(1); month <= 12; month++ {
 			date = lib.NewDate(year, month, 1)
-			jd = ToJd(date)
+			jd = calType.ToJd(date)
 			fmt.Printf(
 				"\t\tlib.%v: %v,\n",
 				date.Repr(),

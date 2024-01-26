@@ -16,6 +16,8 @@ import (
 	"github.com/ilius/libgostarcal/cal_types/gregorian"
 )
 
+var greg = gregorian.New()
+
 func init() {
 	fmt.Printf("")
 }
@@ -142,7 +144,7 @@ func GetEpochByGDate(gdate *lib.Date, loc *time.Location) int64 {
 
 // tested
 func GetEpochByJd(jd int, loc *time.Location) int64 {
-	return GetEpochByGDate(gregorian.JdTo(jd), loc)
+	return GetEpochByGDate(greg.JdTo(jd), loc)
 }
 
 /*
@@ -191,7 +193,7 @@ func GetHmsBySeconds(second uint) lib.HMS {
 func GetJhmsByEpoch(epoch int64, loc *time.Location) (int, lib.HMS) {
 	// return (jd, hour, minute, second)
 	t := time.Unix(epoch, 0).In(loc) // .In useful? FIXME
-	jd := gregorian.ToJd(lib.NewDate(
+	jd := greg.ToJd(lib.NewDate(
 		t.Year(),
 		uint8(t.Month()),
 		uint8(t.Day()),
@@ -204,7 +206,7 @@ func GetJhmsByEpoch(epoch int64, loc *time.Location) (int, lib.HMS) {
 }
 
 func GetEpochByJhms(jd int, hms lib.HMS, loc *time.Location) int64 {
-	gdate := gregorian.JdTo(jd)
+	gdate := greg.JdTo(jd)
 	t := time.Date(
 		gdate.Year,
 		time.Month(gdate.Month), // gdate.Month is uint8

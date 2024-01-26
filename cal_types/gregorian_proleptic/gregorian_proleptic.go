@@ -22,7 +22,6 @@ package gregorian_proleptic
 
 import (
 	lib "github.com/ilius/libgostarcal"
-	"github.com/ilius/libgostarcal/cal_types"
 	. "github.com/ilius/libgostarcal/utils"
 )
 
@@ -72,31 +71,52 @@ var monthLen = []uint8{
 
 // #############################
 
-func init() {
-	cal_types.RegisterCalType(
-		Name,
-		Desc,
-		Epoch,
-		MinMonthLen,
-		MaxMonthLen,
-		AvgYearLen,
-		MonthNames,
-		MonthNamesAb,
-		IsLeap,
-		ToJd,
-		JdTo,
-		GetMonthLen,
-	)
+func New() *calTypeImp {
+	return &calTypeImp{}
 }
 
-func IsLeap(year int) bool {
+type calTypeImp struct{}
+
+func (*calTypeImp) Name() string {
+	return Name
+}
+
+func (*calTypeImp) Desc() string {
+	return Desc
+}
+
+func (*calTypeImp) Epoch() int {
+	return Epoch
+}
+
+func (*calTypeImp) MinMonthLen() uint8 {
+	return MinMonthLen
+}
+
+func (*calTypeImp) MaxMonthLen() uint8 {
+	return MaxMonthLen
+}
+
+func (*calTypeImp) AvgYearLen() float64 {
+	return AvgYearLen
+}
+
+func (*calTypeImp) MonthNames() []string {
+	return MonthNames
+}
+
+func (*calTypeImp) MonthNamesAb() []string {
+	return MonthNamesAb
+}
+
+func (*calTypeImp) IsLeap(year int) bool {
 	if year < 1 {
 		year += 1
 	}
 	return year%4 == 0 && (year%100 != 0 || year%400 == 0) // safe
 }
 
-func ToJd(date *lib.Date) int {
+func (*calTypeImp) ToJd(date *lib.Date) int {
 	/*
 	   Formula from The Calendar FAQ by Claus Tondering
 	   http://www.tondering.dk/claus/cal/node3.html#SECTION003161000000000000000
@@ -124,7 +144,7 @@ func ToJd(date *lib.Date) int {
 		Div(153*m+2, 5) + int(date.Day))
 }
 
-func JdTo(jd int) *lib.Date {
+func (*calTypeImp) JdTo(jd int) *lib.Date {
 	/*
 	   Formula from The Calendar FAQ by Claus Tondering
 	   http://www.tondering.dk/claus/cal/node3.html#SECTION003161000000000000000
@@ -149,9 +169,9 @@ func JdTo(jd int) *lib.Date {
 	return lib.NewDate(year, month, day)
 }
 
-func GetMonthLen(year int, month uint8) uint8 {
+func (ct *calTypeImp) GetMonthLen(year int, month uint8) uint8 {
 	if month == 2 {
-		if IsLeap(year) {
+		if ct.IsLeap(year) {
 			return 29
 		}
 		return 28
