@@ -6,10 +6,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	//"container/heap"
-)
 
-import (
+	//"container/heap"
+
 	. "github.com/ilius/libgostarcal/utils"
 
 	// . "github.com/ilius/libgostarcal/heap_utils"
@@ -106,8 +105,8 @@ func parseInterval(str string) (*Interval, error) {
 			return nil, startErr
 		}
 		return &Interval{
-			int64(start),
-			int64(start),
+			start,
+			start,
 			true,
 		}, nil
 	}
@@ -128,8 +127,8 @@ func parseInterval(str string) (*Interval, error) {
 		closedEnd = true
 	}
 	return &Interval{
-		int64(start),
-		int64(end),
+		start,
+		end,
 		closedEnd,
 	}, nil
 }

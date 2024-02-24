@@ -29,7 +29,7 @@ func GenerateRandomBase64String(maxLength int) (string, error) {
 		continue.
 		The actual length of string will be `floor(maxLength / 4) * 4`
 	*/
-	b, err := GenerateRandomBytes(int(maxLength/4) * 3)
+	b, err := GenerateRandomBytes(maxLength / 4 * 3)
 	if err != nil {
 		return "", err
 	}

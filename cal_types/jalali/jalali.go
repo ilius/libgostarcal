@@ -190,7 +190,7 @@ func (ct *calTypeImp) JdTo(jd int) *lib.Date {
 		month, day := getMonthDayFromYdays(yday)
 		return lib.NewDate(year, month, day)
 	}
-	jdays := int(jd - GREGORIAN_EPOCH - 584101)
+	jdays := jd - GREGORIAN_EPOCH - 584101
 	// -(1600*365 + 1600//4 - 1600//100 + 1600//400) + 365-79+1 == -584101
 	j_np, jdays := Divmod(jdays, 12053)
 
