@@ -20,8 +20,8 @@ const (
 )
 
 type EventRuleType struct {
-	ValueChecker *func(value interface{}) bool
-	ValueDecoder func(value string) (interface{}, error)
+	ValueChecker *func(value any) bool
+	ValueDecoder func(value string) (any, error)
 	Name         string
 	Order        int
 }
@@ -64,7 +64,7 @@ func (model EventRuleModel) Decode() (EventRule, error) {
 
 type EventRule struct {
 	Type  *EventRuleType
-	Value interface{}
+	Value any
 }
 
 func (rule EventRule) Check() bool {

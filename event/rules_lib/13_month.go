@@ -9,7 +9,7 @@ import (
 const R_month = "month"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		list, ok := value.([]int)
 		if !ok {
 			panic(fmt.Errorf(

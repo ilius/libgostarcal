@@ -9,7 +9,7 @@ import (
 const R_dayTime = "dayTime"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(*lib.HMS)
 		if !ok {
 			panic(fmt.Errorf(

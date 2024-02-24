@@ -9,7 +9,7 @@ import (
 const R_cycleLen = "cycleLen"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(*lib.DHMS)
 		if !ok {
 			panic(fmt.Errorf(

@@ -9,7 +9,7 @@ import (
 const R_start = "start"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(*lib.DateHMS)
 		if !ok {
 			panic(fmt.Errorf(

@@ -129,7 +129,7 @@ func Test_ContainsConcurrent(t *testing.T) {
 
 	s := NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		interfaces = append(interfaces, v)
@@ -149,7 +149,7 @@ func Test_DifferenceConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)
@@ -170,7 +170,7 @@ func Test_EqualConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)
@@ -191,7 +191,7 @@ func Test_IntersectConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)
@@ -212,7 +212,7 @@ func Test_IsSubsetConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)
@@ -233,7 +233,7 @@ func Test_IsSupersetConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)
@@ -258,12 +258,12 @@ func Test_IterConcurrent(t *testing.T) {
 		s.Add(v)
 	}
 
-	cs := make([]<-chan interface{}, 0)
+	cs := make([]<-chan any, 0)
 	for range ints {
 		cs = append(cs, s.Iter())
 	}
 
-	c := make(chan interface{})
+	c := make(chan any)
 	go func() {
 		for n := 0; n < len(ints)*N; {
 			for _, d := range cs {
@@ -331,7 +331,7 @@ func Test_SymmetricDifferenceConcurrent(t *testing.T) {
 
 	s, ss := NewSet(), NewSet()
 	ints := rand.Perm(N)
-	interfaces := make([]interface{}, 0)
+	interfaces := make([]any, 0)
 	for _, v := range ints {
 		s.Add(v)
 		ss.Add(v)

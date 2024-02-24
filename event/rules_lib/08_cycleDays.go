@@ -5,7 +5,7 @@ import "fmt"
 const R_cycleDays = "cycleDays"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(int)
 		if !ok {
 			panic(fmt.Errorf(

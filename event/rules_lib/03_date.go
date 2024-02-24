@@ -9,7 +9,7 @@ import (
 const R_date = "date"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(*lib.Date)
 		if !ok {
 			panic(fmt.Errorf(

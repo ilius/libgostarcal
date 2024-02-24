@@ -36,14 +36,14 @@ func newThreadSafeSet() threadSafeSet {
 	return threadSafeSet{s: newThreadUnsafeSet()}
 }
 
-func (set *threadSafeSet) Add(i interface{}) bool {
+func (set *threadSafeSet) Add(i any) bool {
 	set.Lock()
 	ret := set.s.Add(i)
 	set.Unlock()
 	return ret
 }
 
-func (set *threadSafeSet) Contains(i ...interface{}) bool {
+func (set *threadSafeSet) Contains(i ...any) bool {
 	set.RLock()
 	ret := set.s.Contains(i...)
 	set.RUnlock()
@@ -118,7 +118,7 @@ func (set *threadSafeSet) Clear() {
 	set.Unlock()
 }
 
-func (set *threadSafeSet) Remove(i interface{}) {
+func (set *threadSafeSet) Remove(i any) {
 	set.Lock()
 	delete(set.s, i)
 	set.Unlock()
@@ -130,8 +130,8 @@ func (set *threadSafeSet) Cardinality() int {
 	return len(set.s)
 }
 
-func (set *threadSafeSet) Iter() <-chan interface{} {
-	ch := make(chan interface{})
+func (set *threadSafeSet) Iter() <-chan any {
+	ch := make(chan any)
 	go func() {
 		set.RLock()
 
@@ -193,9 +193,9 @@ func (set *threadSafeSet) CartesianProduct(other Set) Set {
 	return ret
 }
 
-func (set *threadSafeSet) ToSlice() []interface{} {
+func (set *threadSafeSet) ToSlice() []any {
 	set.RLock()
-	keys := make([]interface{}, 0, set.Cardinality())
+	keys := make([]any, 0, set.Cardinality())
 	for elem := range set.s {
 		keys = append(keys, elem)
 	}

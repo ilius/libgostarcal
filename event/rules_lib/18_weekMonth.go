@@ -50,13 +50,13 @@ func (wm WeekMonth) IsValid() bool {
 }
 
 func init() {
-	RegisterValueDecoder(T_weekMonth, func(value string) (interface{}, error) {
+	RegisterValueDecoder(T_weekMonth, func(value string) (any, error) {
 		valueBytes := []byte(value)
 		obj := WeekMonth{}
 		err := json.Unmarshal(valueBytes, &obj)
 		return obj, err
 	})
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		wm, ok := value.(WeekMonth)
 		if !ok {
 			panic(fmt.Errorf(

@@ -52,7 +52,7 @@ requiredClasses.Add("English")
 requiredClasses.Add("Math")
 requiredClasses.Add("Biology")
 
-scienceSlice := []interface{}{"Biology", "Chemistry"}
+scienceSlice := []any{"Biology", "Chemistry"}
 scienceClasses := mapset.NewSetFromSlice(scienceSlice)
 
 electiveClasses := mapset.NewSet()
@@ -82,7 +82,7 @@ fmt.Println(scienceClasses.Intersect(requiredClasses)) //Set{Biology}
 fmt.Println(bonusClasses.Cardinality()) //2
 
 //Do you have the following classes? Welding, Automotive and English?
-fmt.Println(allClasses.IsSuperset(mapset.NewSetFromSlice([]interface{}{"Welding", "Automotive", "English"}))) //true
+fmt.Println(allClasses.IsSuperset(mapset.NewSetFromSlice([]any{"Welding", "Automotive", "English"}))) //true
 ```
 
 Thanks!

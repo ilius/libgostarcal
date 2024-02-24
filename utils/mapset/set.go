@@ -36,7 +36,7 @@ package mapset
 type Set interface {
 	// Adds an element to the set. Returns whether
 	// the item was added.
-	Add(i interface{}) bool
+	Add(i any) bool
 
 	// Returns the number of elements in the set.
 	Cardinality() int
@@ -51,7 +51,7 @@ type Set interface {
 
 	// Returns whether the given items
 	// are all in the set.
-	Contains(i ...interface{}) bool
+	Contains(i ...any) bool
 
 	// Returns the difference between this set
 	// and other. The returned set will contain
@@ -104,10 +104,10 @@ type Set interface {
 
 	// Returns a channel of elements that you can
 	// range over.
-	Iter() <-chan interface{}
+	Iter() <-chan any
 
 	// Remove a single element from the set.
-	Remove(i interface{})
+	Remove(i any)
 
 	// Provides a convenient string representation
 	// of the current state of the set.
@@ -137,11 +137,11 @@ type Set interface {
 	CartesianProduct(other Set) Set
 
 	// Returns the members of the set as a slice.
-	ToSlice() []interface{}
+	ToSlice() []any
 }
 
 // Creates and returns a reference to an empty set.
-func NewSet(s ...interface{}) Set {
+func NewSet(s ...any) Set {
 	set := newThreadSafeSet()
 	for _, item := range s {
 		set.Add(item)
@@ -150,12 +150,12 @@ func NewSet(s ...interface{}) Set {
 }
 
 // Creates and returns a new set with the given elements
-func NewSetWith(elts ...interface{}) Set {
+func NewSetWith(elts ...any) Set {
 	return NewSetFromSlice(elts)
 }
 
 // Creates and returns a reference to a set from an existing slice
-func NewSetFromSlice(s []interface{}) Set {
+func NewSetFromSlice(s []any) Set {
 	a := NewSet(s...)
 	return a
 }
@@ -165,7 +165,7 @@ func NewThreadUnsafeSet() Set {
 	return &set
 }
 
-func NewThreadUnsafeSetFromSlice(s []interface{}) Set {
+func NewThreadUnsafeSetFromSlice(s []any) Set {
 	a := NewThreadUnsafeSet()
 	for _, item := range s {
 		a.Add(item)

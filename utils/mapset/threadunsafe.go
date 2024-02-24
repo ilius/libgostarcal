@@ -31,11 +31,11 @@ import (
 	"strings"
 )
 
-type threadUnsafeSet map[interface{}]struct{}
+type threadUnsafeSet map[any]struct{}
 
 type orderedPair struct {
-	first  interface{}
-	second interface{}
+	first  any
+	second any
 }
 
 func newThreadUnsafeSet() threadUnsafeSet {
@@ -51,13 +51,13 @@ func (pair *orderedPair) Equal(other orderedPair) bool {
 	return false
 }
 
-func (set *threadUnsafeSet) Add(i interface{}) bool {
+func (set *threadUnsafeSet) Add(i any) bool {
 	_, found := (*set)[i]
 	(*set)[i] = struct{}{}
 	return !found // False if it existed already
 }
 
-func (set *threadUnsafeSet) Contains(i ...interface{}) bool {
+func (set *threadUnsafeSet) Contains(i ...any) bool {
 	for _, val := range i {
 		if _, ok := (*set)[val]; !ok {
 			return false
@@ -139,7 +139,7 @@ func (set *threadUnsafeSet) Clear() {
 	*set = newThreadUnsafeSet()
 }
 
-func (set *threadUnsafeSet) Remove(i interface{}) {
+func (set *threadUnsafeSet) Remove(i any) {
 	delete(*set, i)
 }
 
@@ -147,8 +147,8 @@ func (set *threadUnsafeSet) Cardinality() int {
 	return len(*set)
 }
 
-func (set *threadUnsafeSet) Iter() <-chan interface{} {
-	ch := make(chan interface{})
+func (set *threadUnsafeSet) Iter() <-chan any {
+	ch := make(chan any)
 	go func() {
 		for elem := range *set {
 			ch <- elem
@@ -236,8 +236,8 @@ func (set *threadUnsafeSet) CartesianProduct(other Set) Set {
 	return cartProduct
 }
 
-func (set *threadUnsafeSet) ToSlice() []interface{} {
-	keys := make([]interface{}, 0, set.Cardinality())
+func (set *threadUnsafeSet) ToSlice() []any {
+	keys := make([]any, 0, set.Cardinality())
 	for elem := range *set {
 		keys = append(keys, elem)
 	}

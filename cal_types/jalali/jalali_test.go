@@ -186,9 +186,9 @@ func TestIsLeap(t *testing.T) {
 	}
 	for algIndex, alg2820 := range []bool{false, true} {
 		SetAlgorithm2820(alg2820)
-		testList := make([][]interface{}, 0, len(testMap))
+		testList := make([][]any, 0, len(testMap))
 		for key, value := range testMap {
-			testList = append(testList, []interface{}{key, value})
+			testList = append(testList, []any{key, value})
 		}
 		sort.Slice(testList, func(i, j int) bool {
 			return testList[i][0].(int) < testList[j][0].(int)

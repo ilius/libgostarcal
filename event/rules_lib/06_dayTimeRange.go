@@ -9,7 +9,7 @@ import (
 const R_dayTimeRange = "dayTimeRange"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(*lib.HMSRange)
 		if !ok {
 			panic(fmt.Errorf(

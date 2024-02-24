@@ -13,8 +13,8 @@ func nrand(n int) []int {
 	return i
 }
 
-func toInterfaces(i []int) []interface{} {
-	ifs := make([]interface{}, len(i))
+func toInterfaces(i []int) []any {
+	ifs := make([]any, len(i))
 	for ind, v := range i {
 		ifs[ind] = v
 	}

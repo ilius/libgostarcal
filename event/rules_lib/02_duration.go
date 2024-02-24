@@ -9,7 +9,7 @@ import (
 const R_duration = "duration"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(utils.Duration)
 		if !ok {
 			panic(fmt.Errorf(

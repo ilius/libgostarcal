@@ -9,7 +9,7 @@ import (
 const R_ex_day = "ex_day"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		list, ok := value.([]int)
 		if !ok {
 			panic(fmt.Errorf(

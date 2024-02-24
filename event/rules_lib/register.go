@@ -2,7 +2,7 @@ package rules_lib
 
 func RegisterValueDecoder(
 	decoderName string,
-	decoderFunc func(string) (interface{}, error),
+	decoderFunc func(string) (any, error),
 ) {
 	_, found := valueDecoders[decoderName]
 	if found {
@@ -15,7 +15,7 @@ func RegisterRuleType(
 	order int,
 	typeName string,
 	decoderName string,
-	checker *func(value interface{}) bool,
+	checker *func(value any) bool,
 ) {
 	_, found := ruleTypes[typeName]
 	if found {

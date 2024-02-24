@@ -9,7 +9,7 @@ import (
 const R_ex_dates = "ex_dates"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		list, ok := value.([]*lib.Date)
 		if !ok {
 			panic(fmt.Errorf(

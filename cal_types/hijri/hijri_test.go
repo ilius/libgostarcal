@@ -353,9 +353,9 @@ func TestToJd_2(t *testing.T) {
 		lib.NewDate(1443, 11, 1): 2459733,
 		lib.NewDate(1443, 12, 1): 2459763,
 	}
-	testList := make([][]interface{}, 0, len(testMap))
+	testList := make([][]any, 0, len(testMap))
 	for key, value := range testMap {
-		testList = append(testList, []interface{}{key, value})
+		testList = append(testList, []any{key, value})
 	}
 	sort.Slice(testList, func(i, j int) bool {
 		return testList[i][1].(int) < testList[j][1].(int)
@@ -608,9 +608,9 @@ func TestJdTo_2(t *testing.T) {
 		2459625: lib.NewDate(1443, 7, 12),
 		2459652: lib.NewDate(1443, 8, 10),
 	}
-	testList := make([][]interface{}, 0, len(testMap))
+	testList := make([][]any, 0, len(testMap))
 	for key, value := range testMap {
-		testList = append(testList, []interface{}{key, value})
+		testList = append(testList, []any{key, value})
 	}
 	sort.Slice(testList, func(i, j int) bool {
 		return testList[i][0].(int) < testList[j][0].(int)

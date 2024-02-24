@@ -9,7 +9,7 @@ import (
 const R_weekNumMode = "weekNumMode"
 
 func init() {
-	checker := func(value interface{}) bool {
+	checker := func(value any) bool {
 		v, ok := value.(string)
 		if !ok {
 			panic(fmt.Errorf(
