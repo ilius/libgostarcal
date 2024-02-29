@@ -7,12 +7,8 @@ import (
 	"strings"
 	"time"
 
-	//"container/heap"
-
-	. "github.com/ilius/libgostarcal/utils"
-
-	// . "github.com/ilius/libgostarcal/heap_utils"
-	. "github.com/ilius/libgostarcal/utils/stack"
+	"github.com/ilius/libgostarcal/utils"
+	"github.com/ilius/libgostarcal/utils/stack"
 )
 
 type FloatInterval struct {
@@ -50,8 +46,8 @@ func (interval Interval) String() string {
 
 func IntervalByJd(jd int, loc *time.Location) *Interval {
 	return &Interval{
-		GetEpochByJd(jd, loc),
-		GetEpochByJd(jd+1, loc),
+		utils.GetEpochByJd(jd, loc),
+		utils.GetEpochByJd(jd+1, loc),
 		false,
 	}
 }
@@ -69,11 +65,6 @@ func ParseInterval(str string) (*Interval, error) {
 		)
 	}
 	return interval, nil
-}
-
-func boolPtr(v bool) *bool {
-	v2 := v
-	return &v2
 }
 
 func parseInterval(str string) (*Interval, error) {
@@ -205,7 +196,7 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 	pcount := len(points)
 	// we need no more than `pcount` spaces
 	list := make(IntervalList, 0, pcount/2) // safe division
-	startedStack := make(Int64Stack, 0, pcount)
+	startedStack := make(stack.Int64Stack, 0, pcount)
 	var start int64
 	for _, point := range points {
 		if !point.IsEnd {
@@ -215,7 +206,7 @@ func (points IntervalPointList) GetIntervalList() (IntervalList, error) {
 		}
 		if len(startedStack) == 0 {
 			return nil, fmt.Errorf(
-				"point='%v', startedStack=[]\n",
+				"point='%v', startedStack=[]",
 				point,
 			)
 		}
@@ -376,9 +367,9 @@ func intersectionOfSomeIntervalLists_endPoint(
 	point *IntervalPoint,
 ) error {
 	state.hasNil = false
-	state.start = MIN_INT64
+	state.start = utils.MIN_INT64
 	for _, tmpStart := range state.openStartList {
-		if tmpStart == MIN_INT64 {
+		if tmpStart == utils.MIN_INT64 {
 			state.hasNil = true
 			// break // FIXME
 		}
@@ -389,7 +380,7 @@ func intersectionOfSomeIntervalLists_endPoint(
 	if !state.hasNil {
 		if state.start > point.Pos {
 			return fmt.Errorf(
-				"Internal Error: start - point.Pos = %d",
+				"internal error: start - point.Pos = %d",
 				state.start-point.Pos,
 			)
 		}
@@ -404,7 +395,7 @@ func intersectionOfSomeIntervalLists_endPoint(
 	}
 	// if start == point.Pos:## FIXME
 	//    print('start = point.Pos = %s, IsEnd=%s'%(start%(24*3600)/3600.0, point.IsEnd))
-	state.openStartList[point.ListId] = MIN_INT64
+	state.openStartList[point.ListId] = utils.MIN_INT64
 	// fmt.Printf("openStartList[%v] = %v\n", point.ListId, MIN_INT64)
 	return nil
 }
@@ -424,9 +415,7 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 	}
 	points := make(IntervalPointList, 0, 2*intervalCount) // exactly `2*intervalCount` spaces
 	for listId, list := range lists {
-		for _, point := range list.GetPointList(listId) {
-			points = append(points, point)
-		}
+		points = append(points, list.GetPointList(listId)...)
 	}
 	points.Sort()
 
@@ -436,7 +425,7 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 		// smaller capacity for result? FIXME
 	}
 	for i := 0; i < listCount; i++ {
-		state.openStartList[i] = MIN_INT64
+		state.openStartList[i] = utils.MIN_INT64
 	}
 	// fmt.Printf("points = %v\n\n", points)
 	for _, point := range points {
@@ -452,10 +441,10 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 		}
 		// start point
 		// start == point.Pos
-		if state.openStartList[point.ListId] != MIN_INT64 {
+		if state.openStartList[point.ListId] != utils.MIN_INT64 {
 			// for _, list := range lists { fmt.Println(list) }
 			return nil, fmt.Errorf(
-				"Internal Error: point:  %v   openStartList: %v",
+				"internal error: point:  %v   openStartList: %v",
 				point,
 				state.openStartList,
 			)

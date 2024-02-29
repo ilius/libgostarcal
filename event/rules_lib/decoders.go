@@ -6,7 +6,6 @@ import (
 	lib "github.com/ilius/libgostarcal"
 	"github.com/ilius/libgostarcal/interval"
 	"github.com/ilius/libgostarcal/utils"
-	//"fmt"
 )
 
 var valueDecoders = map[string]func(string) (any, error){

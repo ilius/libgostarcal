@@ -68,7 +68,7 @@ func getIntersectionString(t *testing.T, list1Str string, list2Str string) strin
 		panic(err1)
 	}
 	if err2 != nil {
-		panic(err1)
+		panic(err2)
 	}
 	ShuffleIntervals(list1)
 	ShuffleIntervals(list2)
