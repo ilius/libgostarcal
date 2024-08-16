@@ -155,6 +155,7 @@ func Test_DifferenceConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {
@@ -176,6 +177,7 @@ func Test_EqualConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {
@@ -197,6 +199,7 @@ func Test_IntersectConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {
@@ -218,6 +221,7 @@ func Test_IsSubsetConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {
@@ -239,6 +243,7 @@ func Test_IsSupersetConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {
@@ -319,7 +324,7 @@ func Test_StringConcurrent(t *testing.T) {
 	wg.Add(len(ints))
 	for range ints {
 		go func() {
-			s.String()
+			_ = s.String()
 			wg.Done()
 		}()
 	}
@@ -337,6 +342,7 @@ func Test_SymmetricDifferenceConcurrent(t *testing.T) {
 		ss.Add(v)
 		interfaces = append(interfaces, v)
 	}
+	_ = interfaces // for linters only
 
 	var wg sync.WaitGroup
 	for range ints {

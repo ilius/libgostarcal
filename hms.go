@@ -44,7 +44,7 @@ func (hms HMS) IsValid() bool {
 }
 
 func (dhms DHMS) IsValid() bool {
-	return dhms.HMS.IsValid() && dhms.Days >= 0
+	return dhms.HMS.IsValid()
 }
 
 func (dhms DHMS) String() string {
