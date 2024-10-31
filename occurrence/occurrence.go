@@ -21,9 +21,9 @@
 package occurrence
 
 import (
-	. "github.com/ilius/libgostarcal/utils/mapset"
-	. "github.com/ilius/libgostarcal/utils"
 	. "github.com/ilius/libgostarcal/interval"
+	. "github.com/ilius/libgostarcal/utils"
+	. "github.com/ilius/libgostarcal/utils/mapset"
 )
 
 /*
@@ -119,11 +119,11 @@ func (occur JdOccurSet) GetEpochIntervalList() IntervalList {
 	return list
 }
 
-func JdOccurSet_CalcJdIntervalList(occur OccurSet) IntervalList {
-	// occur is JdOccurSet
-	// FIXME
-	return IntervalList{}
-}
+// TODO:
+// func JdOccurSet_CalcJdIntervalList(occur OccurSet) IntervalList {
+// 	// occur is JdOccurSet
+// 	return IntervalList{}
+// }
 
 type IntervalOccurSet struct {
 	Event Event
