@@ -3,18 +3,17 @@
 
 ## golang-set
 
-
 The missing set collection for the Go language.  Until Go has sets built-in...use this.
 
 Coming from Python one of the things I miss is the superbly wonderful set collection.  This is my attempt to mimic the primary features of the set from Python.
 You can of course argue that there is no need for a set in Go, otherwise the creators would have added one to the standard library.  To those I say simply ignore this repository
 and carry-on and to the rest that find this useful please contribute in helping me make it better by:
 
-* Helping to make more idiomatic improvements to the code.
-* Helping to increase the performance of it. ~~(So far, no attempt has been made, but since it uses a map internally, I expect it to be mostly performant.)~~
-* Helping to make the unit-tests more robust and kick-ass.
-* Helping to fill in the [documentation.](http://godoc.org/github.com/deckarep/golang-set)
-* Simply offering feedback and suggestions.  (Positive, constructive feedback is appreciated.)
+- Helping to make more idiomatic improvements to the code.
+- Helping to increase the performance of it. ~~(So far, no attempt has been made, but since it uses a map internally, I expect it to be mostly performant.)~~
+- Helping to make the unit-tests more robust and kick-ass.
+- Helping to fill in the [documentation.](http://godoc.org/github.com/deckarep/golang-set)
+- Simply offering feedback and suggestions.  (Positive, constructive feedback is appreciated.)
 
 I have to give some credit for helping seed the idea with this post on [stackoverflow.](http://programmers.stackexchange.com/questions/177428/sets-data-structure-in-golang)
 
@@ -22,23 +21,21 @@ I have to give some credit for helping seed the idea with this post on [stackove
 
 ## Features (as of 9/22/2014)
 
-* a CartesianProduct() method has been added with unit-tests: [Read more about the cartesian product](http://en.wikipedia.org/wiki/Cartesian_product)
+- a CartesianProduct() method has been added with unit-tests: [Read more about the cartesian product](http://en.wikipedia.org/wiki/Cartesian_product)
 
 ## Features (as of 9/15/2014)
 
-* a PowerSet() method has been added with unit-tests: [Read more about the Power set](http://en.wikipedia.org/wiki/Power_set)
+- a PowerSet() method has been added with unit-tests: [Read more about the Power set](http://en.wikipedia.org/wiki/Power_set)
 
 ## Features (as of 4/22/2014)
 
-* One common interface to both implementations
-* Two set implementations to choose from
-  * a thread-safe implementation designed for concurrent use
-  * a non-thread-safe implementation designed for performance
-* 75 benchmarks for both implementations
-* 35 unit tests for both implementations
-* 14 concurrent tests for the thread-safe implementation
-
-
+- One common interface to both implementations
+- Two set implementations to choose from
+  - a thread-safe implementation designed for concurrent use
+  - a non-thread-safe implementation designed for performance
+- 75 benchmarks for both implementations
+- 35 unit tests for both implementations
+- 14 concurrent tests for the thread-safe implementation
 
 Please see the unit test file for additional usage examples.  The Python set documentation will also do a better job than I can of explaining how a set typically [works.](http://docs.python.org/2/library/sets.html)    Please keep in mind
 however that the Python set is a built-in type and supports additional features and syntax that make it awesome.
