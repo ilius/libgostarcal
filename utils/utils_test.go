@@ -54,9 +54,7 @@ func TestTimeZone(t *testing.T) {
 }
 
 func TestGetJdListFromEpochRange(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 	randSec1 := int64(rand.Int() % (24 * 3600))
-	rand.Seed(time.Now().UnixNano())
 	randSec2 := int64(rand.Int() % (24 * 3600))
 	// tm := time.Now()
 	// loc := tm.Location()
