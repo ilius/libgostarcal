@@ -424,7 +424,7 @@ func IntersectionOfSomeIntervalLists(lists ...IntervalList) (IntervalList, error
 		result:        make(IntervalList, 0, intervalCount),
 		// smaller capacity for result? FIXME
 	}
-	for i := 0; i < listCount; i++ {
+	for i := range listCount {
 		state.openStartList[i] = utils.MIN_INT64
 	}
 	// fmt.Printf("points = %v\n\n", points)

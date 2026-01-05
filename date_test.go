@@ -97,7 +97,7 @@ func TestParseDateList(t *testing.T) {
 		}
 		is.NotErr(err)
 		is.Equal(len(dateList), len(expectedStrList))
-		for i := 0; i < len(dateList); i++ {
+		for i := range dateList {
 			is.Equal(dateList[i].String(), expectedStrList[i])
 		}
 	}

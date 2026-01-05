@@ -42,7 +42,7 @@ func Test_AddConcurrent(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(len(ints))
-	for i := 0; i < len(ints); i++ {
+	for i := range ints {
 		go func(i int) {
 			s.Add(i)
 			wg.Done()
@@ -66,7 +66,7 @@ func Test_CardinalityConcurrent(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		elems := s.Cardinality()
-		for i := 0; i < N; i++ {
+		for range N {
 			newElems := s.Cardinality()
 			if newElems < elems {
 				t.Errorf("Cardinality shrunk from %v to %v", elems, newElems)
@@ -75,7 +75,7 @@ func Test_CardinalityConcurrent(t *testing.T) {
 		wg.Done()
 	}()
 
-	for i := 0; i < N; i++ {
+	for range N {
 		s.Add(rand.Int())
 	}
 	wg.Wait()
@@ -89,7 +89,7 @@ func Test_ClearConcurrent(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(len(ints))
-	for i := 0; i < len(ints); i++ {
+	for i := range ints {
 		go func() {
 			s.Clear()
 			wg.Done()
@@ -361,7 +361,7 @@ func Test_ToSlice(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(len(ints))
-	for i := 0; i < len(ints); i++ {
+	for i := range ints {
 		go func(i int) {
 			s.Add(i)
 			wg.Done()
