@@ -58,6 +58,10 @@ func Test_AddConcurrent(t *testing.T) {
 }
 
 func Test_CardinalityConcurrent(t *testing.T) {
+	if runtime.Compiler == "tinygo" { // gets stuck
+		t.Log("skipping on tinygo")
+		return
+	}
 	runtime.GOMAXPROCS(2)
 
 	s := NewSet()

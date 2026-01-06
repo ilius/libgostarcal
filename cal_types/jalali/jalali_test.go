@@ -281,7 +281,7 @@ func TestToJd(t *testing.T) {
 
 func TestGetMonthLen(t *testing.T) {
 	is := is.New(t).MsgSep(", ")
-	testMap := map[[2]int]int{
+	testMap := map[[2]int]uint8{
 		{1394, 1}:  31,
 		{1394, 2}:  31,
 		{1394, 3}:  31,
@@ -322,7 +322,10 @@ func TestGetMonthLen(t *testing.T) {
 	for ym, monthLen := range testMap {
 		year := ym[0]
 		month := uint8(ym[1])
-		is.AddMsg("ym={%v, %v}", year, month).Equal(calType.GetMonthLen(year, month), monthLen)
+		is.AddMsg("ym={%v, %v}", year, month).Equal(
+			calType.GetMonthLen(year, month),
+			monthLen,
+		)
 	}
 }
 
